@@ -3,9 +3,9 @@ import Carousel from "react-bootstrap/Carousel";
 import "bootstrap/dist/css/bootstrap.min.css"; // Include Bootstrap CSS
 
 // Placeholder image sources - ensure these paths are correct
-import firstSlide from "../../Assets/Images/7.jpg";
-import secondSlide from "../../Assets/Images/23.jpg";
-import thirdSlide from "../../Assets/Images/81.jpg";
+// import firstSlide from "../../Assets/Images/7.jpg";
+// import secondSlide from "../../Assets/Images/23.jpg";
+// import thirdSlide from "../../Assets/Images/81.jpg";
 import "../../Styles/Slideshow.css";
 
 function CarouselFadeExample() {

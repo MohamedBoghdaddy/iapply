@@ -3,7 +3,7 @@ import HeroSection from "./HeroSection";
 import StorytellingSection from "./StorytellingSection";
 import CallToActionSection from "./CallToActionSection";
 import ContactInfoSection from "./ContactInfoSection";
-import "../../Styles/Home.css";
+import "../styles/style.css";
 
 const Home = () => {
   return (

@@ -1,13 +1,13 @@
 import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import maram from "../../Assets/Images/maram.jpg";
+import maram2 from "../static/images/logo.jpeg";
 
 const StorytellingSection = () => (
   <Container className="storytelling-section" id="About us">
     <Row>
       <Col md={6}>
         <img
-          src={maram}
+          src={maram2}
           alt="Company-team"
           style={{ width: "400px", height: "auto" }}
         />

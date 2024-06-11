@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Navbar, Nav, Container, Form, NavLink } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons"; // Import the correct icon
-import "../../Styles/Navbar.css"; // CSS for the NavBar
+import "../../Styles/navbar.css"; // CSS for the NavBar
 import logo from "../../Assets/Images/eco-logo.png"; // Your company logo
 import { Link } from "react-router-dom";
 
