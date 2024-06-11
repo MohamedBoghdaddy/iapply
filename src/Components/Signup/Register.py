@@ -4,8 +4,11 @@ import openai
 import uuid
 from datetime import datetime
 from werkzeug.security import generate_password_hash
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 
 app = Flask(__name__)
+app.config['JWT_SECRET_KEY'] = 'your_jwt_secret_key'
+jwt = JWTManager(app)
 
 dynamodb = boto3.resource('dynamodb')
 openai.api_key = 'your_openai_api_key'
@@ -34,19 +37,28 @@ def register():
     })
     return jsonify(message="User registered successfully"), 201
 
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    table = dynamodb.Table('Users')
+    user = table.get_item(Key={'email': data['email']})
+    if user and check_password_hash(user['Item']['password_hash'], data['password']):
+        token = create_access_token(identity=data['email'])
+        return jsonify(token=token), 200
+    return jsonify(message="Invalid credentials"), 401
+
 @app.route('/apply', methods=['POST'])
+@jwt_required()
 def apply():
     data = request.get_json()
     user_profile = data['profile']
     job_description = data['job_description']
-    # Generate cover letter using GPT-4
     response = openai.Completion.create(
         engine="davinci",
         prompt=f"Write a cover letter for a job with the following description: {job_description} based on the user profile: {user_profile}",
         max_tokens=250
     )
     cover_letter = response.choices[0].text
-    # Submit job application
     submit_application(data['job_link'], user_profile, cover_letter)
     return jsonify(message="Application submitted"), 200
 
