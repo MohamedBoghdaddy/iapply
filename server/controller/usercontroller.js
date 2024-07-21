@@ -136,13 +136,13 @@ export const getUser = async (req, res) => {
 
 export const updateUser = async (req, res) => {
   const { id } = req.params;
-  const { name, email, password, gender } = req.body;
+  const { username, email, password, gender } = req.body;
 
   // Manual validation
-  if (!name || !email || !gender) {
+  if (!username || !email || !gender) {
     return res
       .status(400)
-      .json({ message: "Name, email, and gender are required" });
+      .json({ message: "username, email, and gender are required" });
   }
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -166,7 +166,7 @@ export const updateUser = async (req, res) => {
     }
 
     // Update user fields
-    user.name = name;
+    user.username = username;
     user.email = email;
     user.gender = gender;
 
