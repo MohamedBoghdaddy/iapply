@@ -1,33 +1,29 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from "react";
+import Sidebar from "./Sidebar";
+import JobAppliedChart from "./JobAppliedChart"; // Ensure JobAppliedChart is imported if used
+import { useAuthContext } from "../../../hooks/useAuthContext";
 
-function Dashboard() {
-  const [applications, setApplications] = useState([]);
+const Dashboard = () => {
+  // Simulated authentication state
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [username, setUsername] = useState("Tommy Peter"); // Example username
+const { user } = useAuthContext();
 
-  useEffect(() => {
-    const fetchApplications = async () => {
-      const token = localStorage.getItem("token");
-      const response = await axios.get("/applications", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setApplications(response.data);
-    };
 
-    fetchApplications();
-  }, []);
+  
 
   return (
-    <div>
-      <h1>Dashboard</h1>
-      <ul>
-        {applications.map((application, index) => (
-          <li key={index}>
-            {application.job_title}: {application.status}
-          </li>
-        ))}
-      </ul>
+    <div className="app-container">
+      {isLoggedIn && <Sidebar username={user} />}
+
+      <div className="main-content">
+        <div className="charts-section">
+          <h3>Analytical Overview</h3>
+          <JobAppliedChart />
+        </div>
+      </div>
     </div>
   );
-}
+};
 
 export default Dashboard;

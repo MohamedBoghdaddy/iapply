@@ -5,59 +5,13 @@ import {
   faLinkedin,
   faInstagram,
 } from "@fortawesome/free-brands-svg-icons";
-import { Link as RouterLink } from "react-router-dom";
-import { Link as ScrollLink } from "react-scroll";
-import "../../Styles/footer.css";
-import "../../App.css";
+
+import "../styles/footer.css";
 
 function Footer() {
   return (
     <section className="footer">
-      <div className="footer-row">
-        <div className="footer-col">
-          <h4>Info</h4>
-          <ul className="links">
-            <li key="about">
-              <ScrollLink to="About us" smooth={true} duration={500}>
-                About us
-              </ScrollLink>{" "}
-            </li>
-            <li key="Products">
-              <RouterLink to="/products">Products</RouterLink>
-            </li>
-            <li key="contact">
-              <RouterLink to="/contact">Contact</RouterLink>
-            </li>
-            <li key="Favorites">
-              <RouterLink to="/favorites">Favorites</RouterLink>
-            </li>
-            <li key="Dashboard">
-              <RouterLink to="/dashboard">Dashboard</RouterLink>
-            </li>
-          </ul>
-        </div>
-        <div className="footer-col">
-          <h4>More</h4>
-          <ul className="links">
-            <li key="Login">
-              <RouterLink to="/login">Login</RouterLink>
-            </li>
-            <li key="Signup">
-              <RouterLink to="/signup">Sign-up</RouterLink>
-            </li>
-            <li key="cart">
-              <RouterLink to="/cart">Cart</RouterLink>
-            </li>
-            <li key="Locations">
-              <ScrollLink to="find-store" smooth={true} duration={500}>
-                Location
-              </ScrollLink>
-            </li>
-            <li key="testimonials">
-              <RouterLink to="/testimonials">Testimonials</RouterLink>
-            </li>
-          </ul>
-        </div>
+      <div className="footer-container">
         <div className="footer-col">
           <h4>Hedj</h4>
           <p>
@@ -78,6 +32,14 @@ function Footer() {
               <FontAwesomeIcon icon={faLinkedin} />
             </a>
           </div>
+        </div>
+
+        <div className="footer-col">
+          <h4>Subscribe to our Newsletter</h4>
+          <form className="newsletter-form">
+            <input type="email" placeholder="Enter your email" />
+            <button type="submit">Subscribe</button>
+          </form>
         </div>
       </div>
     </section>

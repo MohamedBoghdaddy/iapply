@@ -1,0 +1,139 @@
+/* Merged CSS with adjusted colors to maintain original scheme */
+
+.navbar {
+  position: fixed; /* Fix the navbar at the top */
+  top: 0; /* Position at the top of the viewport */
+  width: 100%; /* Ensure it spans the full width */
+  height: 70px; /* Adjust the height to a smaller size */
+  background-color: #323c43; /* Dark background */
+  color: #eceae6; /* Light text color */
+  padding: 0 20px; /* Adjust padding */
+  z-index: 1000; /* Ensure it stays above other content */
+}
+
+.navbar .navbar-nav {
+  display: flex; /* Flexbox for navbar links */
+  flex-grow: 1; /* Allow the navbar to grow */
+  justify-content: flex-end; /* Space links evenly */
+}
+
+.navbar .nav-link {
+  padding: 0 10px; /* Padding between links */
+  color: #bbb4a7; /* Light gray text color */
+}
+
+.navbar .navbar-toggler {
+  background-color: #303132; /* Dark toggle button */
+  border: none;
+}
+
+.search-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  margin-left: 10px;
+  display: flex;
+}
+
+.form-control {
+  display: flex; /* Use Flexbox for layout */
+  justify-content: space-evenly; /* Space between elements */
+  align-items: center; /* Align items vertically */
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.d-flex {
+  display: flex; /* Use Flexbox for layout */
+  justify-content: space-evenly; /* Space between elements */
+  align-items: center; /* Align items vertically */
+  flex-direction: row;
+}
+
+.count {
+  top: -6px; /* Adjusted to position the badge at the top */
+  right: -4px; /* Adjusted to position the badge at the top */
+  background: #ccc;
+  border-radius: 50%;
+  color: #fff;
+  padding: 2px 6px;
+  font-size: 12px;
+  transition: background 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.count:hover {
+  background: #aaa;
+}
+
+.nav-link-products {
+  cursor: pointer;
+  color: rgb(0, 0, 0); /* Black text for products */
+}
+
+.nav-link-products:hover {
+  background-color: #eceae6; /* Light background on hover */
+}
+
+.nav-link {
+  cursor: pointer;
+  color: rgb(249, 227, 227); /* Light text color */
+}
+
+.nav-link:hover {
+  color: #292323; /* Darker text color on hover */
+}
+
+.navbar .link-wish:hover {
+  color: red; /* Red color on hover */
+}
+
+.results-list {
+  position: absolute;
+  top: 50px; /* Adjust according to your navbar height */
+  right: 10px;
+  width: 300px;
+  background: white;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.search-result {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+}
+
+.search-result:hover {
+  background-color: #f1f1f1; /* Light gray background on hover */
+}
+
+@media only screen and (max-width: 1800px) {
+  /* Adjustments for screens up to 1800px in width */
+  .nav-link {
+    font-size: 1.8rem !important;
+    margin-left: 15px;
+  }
+}
+
+@media only screen and (max-width: 1200px) {
+  /* Adjustments for screens up to 1200px in width */
+  .nav-link {
+    font-size: 1.5rem !important;
+    margin-left: 10px;
+  }
+}
+
+@media only screen and (max-width: 766px) {
+  /* Adjustments for screens up to 766px in width */
+  .nav-link {
+    font-size: 1.2rem !important;
+    margin-left: 5px;
+  }
+}

@@ -1,29 +1,100 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Login from "./frontend/Components/Login/Login";
-import Register from "./frontend/Components/Signup/Register";
+import Login from "./frontend/Components/LoginSystem/Login/Login";
+import Signup from "./frontend/Components/LoginSystem/Signup/signup";
 import Dashboard from "./frontend/Components/Dashboard/Dashboard";
-import AdminDashboard from "./frontend/Components/Dashboard/AdminDashboard";
-import Notifications from "./frontend/Components/Dashboard/Notifications";
-import Home from "./frontend/Components/Home/Home";
-import "./frontend/Components/styles/style.css"; // Update the path according to your folder structure
+import Profile from "./frontend/Components/Dashboard/Profile";
+import ApplyToJobs from "./frontend/Components/Dashboard/ApplyToJobs";
+import Sidebar from "./frontend/Components/Dashboard/Sidebar";
 
+import JobHistory from "./frontend/Components/Dashboard/JobHistory";
+import PaymentHistory from "./frontend/Components/Dashboard/PaymentHistory";
+import AccountSettings from "./frontend/Components/Dashboard/AccountSettings";
+import AdminDashboard from "./frontend/Components/AdminDashboard/AdminDashboard";
+import Notifications from "./frontend/Components/AdminDashboard/Notifications";
+import Home from "./frontend/Components/Home/Home";
+import Footer from "./frontend/Components/Home/Footer";
+import Contact from "./frontend/Components/contact/contact";
+import NavBar from "./frontend/Components/Home/NavBar";
+import Mininavbar from "./frontend/Components/Home/Mininavbar";
 const App = () => {
   return (
     <BrowserRouter>
-      <div className="App">
-        <header>{/* Your header content */}</header>
-        <main>
-          <Routes>
-            <Route exact path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/adminDashboard" element={<AdminDashboard />} />
-            <Route path="/notifications" element={<Notifications />} />
-          </Routes>
-        </main>
-      </div>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <NavBar />
+              <Home />
+              <Footer />
+            </>
+          }
+        />
+
+        <Route
+          path="/dashboard"
+          element={
+            <>
+              <Mininavbar />
+              <Sidebar />
+              <Profile />
+              <JobHistory />
+              <PaymentHistory />
+              <AccountSettings />
+
+              <ApplyToJobs />
+              <Dashboard />
+            </>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <>
+              <Mininavbar />
+              <AccountSettings />
+              <Dashboard />
+
+              <Footer />
+            </>
+          }
+        />
+        <Route />
+        <Route
+          path="/login"
+          element={
+            <>
+              <Mininavbar />
+              <Login />
+              <Footer />
+            </>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <>
+              <Mininavbar />
+              <Signup />
+              <Footer />
+            </>
+          }
+        />
+        <Route path="/adminDashboard" element={<AdminDashboard />} />
+        <Route path="/notifications" element={<Notifications />} />
+
+        <Route
+          path="/contact"
+          element={
+            <>
+              <Mininavbar />
+              <Contact />
+              <Footer />
+            </>
+          }
+        />
+      </Routes>
     </BrowserRouter>
   );
 };

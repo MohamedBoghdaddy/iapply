@@ -1,0 +1,20 @@
+.job-applied-status {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.job-applied-status h3 {
+  color: #2d3e50;
+}
+
+.status {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.job-applied-status {
+  background: #fff
+}

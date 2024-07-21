@@ -1,19 +1,17 @@
 import React from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import "../../Components/styles/Home.css"; // Adjust the path as needed
 
 const HeroSection = () => (
   <div className="hero-section">
     <Container>
       <Row>
         <Col>
-          <h1>Welcome to Hedj</h1>
-          <p>
-            Premium furniture crafted with a touch of elegance. We create pieces
-            that transform your house into a home.
-          </p>
-          <Button variant="dark" as={Link} to="/shop">
-            Shop Now
+          <h1>Welcome to HKI AI CAREER</h1>
+          <p>Your Career Ally: AI Applies, You RELAX, Job Offers Arrive!</p>
+          <Button variant="dark" as={Link} to="/signup">
+            Free trial !
           </Button>
         </Col>
       </Row>
