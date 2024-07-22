@@ -109,6 +109,8 @@ export const loginUser = async (req, res) => {
 
 export const logoutUser = async (req, res) => {
   try {
+    // Remove user from storage
+    localStorage.removeItem("user");
     // Clear session data
     req.session.destroy((err) => {
       if (err) {

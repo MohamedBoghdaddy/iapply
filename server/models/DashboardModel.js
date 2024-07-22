@@ -7,7 +7,10 @@ const dashboardSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    // Add other fields as required
+    analytics: {
+      type: Object,
+      default: {},
+    },
     widgets: [
       {
         type: mongoose.Schema.Types.Mixed,

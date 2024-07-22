@@ -38,6 +38,7 @@ const dashboardReducer = (state, action) => {
 };
 
 const DashboardProvider = ({ children }) => {
+  const [dashboard, setDashboard] = useState(null);
   const [state, dispatch] = useReducer(dashboardReducer, initialState);
   const [loading, setLoading] = useState(true);
 
@@ -107,6 +108,24 @@ const DashboardProvider = ({ children }) => {
             `http://localhost:4000/api/dashboard/${state.userId}`,
             ActionTypes.SET_DASHBOARD
           ),
+        updateDashboard: async (data) => {
+          try {
+            const response = await axios.put(
+              `http://localhost:4000/api/dashboard/${state.userId}`,
+              data,
+              {
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem("token")}`,
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+            return response.data;
+          } catch (error) {
+            console.error("Failed to update dashboard", error);
+            throw error;
+          }
+        },
         updateDashboard: async (data) => {
           try {
             const response = await axios.put(

@@ -1,34 +1,58 @@
-// Dashboard/components/ApplyToJobsComponent.js
-
 import React, { useState } from "react";
 import axios from "axios";
+import "../styles/ApplyToJobs.css"; // Import the CSS file
 
 const ApplyToJobs = ({ userId, cvText, preferences }) => {
   const [response, setResponse] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleApplyToJobs = async () => {
+    setLoading(true);
     try {
-      const response = await axios.post("/api/apply-jobs", {
-        userId,
-        jobDetails: preferences, // Assuming preferences contain job details
-      });
-      setResponse(response.data.appliedJob);
+      const result = await axios.post(
+        "http://localhost:4000/api/AppliedJobRoutes/job",
+        {
+          userId,
+          cvText, // Sending CV text to the backend
+          jobDetails: preferences,
+        }
+      );
+      setResponse(result.data.appliedJob);
     } catch (error) {
       console.error("Error applying to jobs:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div>
-      <button onClick={handleApplyToJobs}>Apply to Jobs</button>
+    <div className="apply-to-jobs-container">
+      <button
+        className="apply-button"
+        onClick={handleApplyToJobs}
+        disabled={loading}
+      >
+        {loading ? "Applying..." : "Apply to Jobs"}
+      </button>
       {response && (
-        <div>
-          <p>Job application successful!</p>
-          <p>Company Name: {response.companyName}</p>
-          <p>Job Title: {response.jobTitle}</p>
-          <p>Location: {response.location}</p>
-          <p>Job Description: {response.jobDescription}</p>
-          <p>Applied Date: {new Date(response.appliedDate).toLocaleString()}</p>
+        <div className="application-response">
+          <h3>Job Application Successful!</h3>
+          <p>
+            <strong>Company Name:</strong> {response.companyName}
+          </p>
+          <p>
+            <strong>Job Title:</strong> {response.jobTitle}
+          </p>
+          <p>
+            <strong>Location:</strong> {response.location}
+          </p>
+          <p>
+            <strong>Job Description:</strong> {response.jobDescription}
+          </p>
+          <p>
+            <strong>Applied Date:</strong>{" "}
+            {new Date(response.appliedDate).toLocaleString()}
+          </p>
         </div>
       )}
     </div>

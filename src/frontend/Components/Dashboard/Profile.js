@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from "react";
-import useDashboard from "../../../hooks/useDashboard";
+// src/frontend/Components/Dashboard/UserProfile.js
+import React, { useState, useEffect, useContext } from "react";
+import { DashboardContext } from "../../../context/DashboardContext"; // Correct import
 import "../styles/Dashboard.css";
 
 const UserProfile = () => {
-  const { userProfile, updateUserProfile, fetchUserProfile } = useDashboard();
+  const { userProfile, updateUserProfile, fetchUserProfile } =
+    useContext(DashboardContext);
+
   const [formData, setFormData] = useState({});
   const [cvFile, setCvFile] = useState(null);
 
-  // Fetch user profile on component mount
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -15,7 +17,7 @@ const UserProfile = () => {
           const profileData = await fetchUserProfile();
           setFormData(profileData);
         } else {
-          setFormData(userProfile); // Use userProfile if already available
+          setFormData(userProfile);
         }
       } catch (error) {
         console.error("Failed to fetch user profile:", error);

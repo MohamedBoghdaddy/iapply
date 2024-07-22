@@ -45,9 +45,9 @@ export const useLogin = () => {
         console.log("Login successful:", response.data);
 
         if (response.data.profileSetupRequired) {
-          navigate("/"); // Redirect to profile setup page
+          navigate("/"); // Redirect to home setup page
         } else {
-          navigate("/dashboard"); // Redirect to dashboard if setup is complete
+          navigate("/profile"); // Redirect to dashboard if setup is complete
         }
       } catch (error) {
         console.log("Login error:", error);

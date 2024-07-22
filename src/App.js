@@ -6,6 +6,7 @@ import Dashboard from "./frontend/Components/Dashboard/Dashboard";
 import Profile from "./frontend/Components/Dashboard/Profile";
 import ApplyToJobs from "./frontend/Components/Dashboard/ApplyToJobs";
 import Sidebar from "./frontend/Components/Dashboard/Sidebar";
+// import { DashboardProvider } from "./context/DashboardContext";
 
 import JobHistory from "./frontend/Components/Dashboard/JobHistory";
 import PaymentHistory from "./frontend/Components/Dashboard/PaymentHistory";
@@ -38,24 +39,52 @@ const App = () => {
             <>
               <Mininavbar />
               <Sidebar />
-              <Profile />
-              <JobHistory />
-              <PaymentHistory />
-              <AccountSettings />
-
-              <ApplyToJobs />
               <Dashboard />
             </>
           }
         />
         <Route
-          path="/dashboard"
+          path="/Profile"
           element={
             <>
               <Mininavbar />
+              <Sidebar />
+              {/* <DashboardProvider> */}
+                <Profile />
+              {/* </DashboardProvider> */}
+            </>
+          }
+        />
+        <Route
+          path="/AccountSettings"
+          element={
+            <>
+              <Mininavbar />
+              <Sidebar />
               <AccountSettings />
-              <Dashboard />
-
+              <Footer />
+            </>
+          }
+        />
+        <Route
+          path="/JobHistory"
+          element={
+            <>
+              <Mininavbar />
+              <Sidebar />
+              <JobHistory />
+              <ApplyToJobs />
+              <Footer />
+            </>
+          }
+        />
+        <Route
+          path="/PaymentHistory"
+          element={
+            <>
+              <Mininavbar />
+              <Sidebar />
+              <PaymentHistory />
               <Footer />
             </>
           }

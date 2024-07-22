@@ -1,18 +1,22 @@
 // controllers/dashboardController.js
 import Dashboard from "../models/DashboardModel.js";
+import User from "../models/UserModel.js";
 
 // Create a new Dashboard
 export const createDashboard = async (req, res) => {
   try {
     const { userId, ...dashboardData } = req.body;
-    if (!userId) {
-      return res.status(400).json({ message: "User ID is required" });
+
+    // Check if user exists
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
-    const dashboard = new Dashboard({ user: userId, ...dashboardData });
+
+    const dashboard = new Dashboard({ userId, ...dashboardData });
     await dashboard.save();
     res.status(201).json(dashboard);
   } catch (error) {
-    console.error("Error creating dashboard:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
@@ -20,13 +24,12 @@ export const createDashboard = async (req, res) => {
 // Get Dashboard for a specific user
 export const getDashboard = async (req, res) => {
   try {
-    const dashboard = await Dashboard.findOne({ user: req.params.userId });
+    const dashboard = await Dashboard.findOne({ userId: req.params.userId });
     if (!dashboard) {
       return res.status(404).json({ message: "Dashboard not found" });
     }
     res.json(dashboard);
   } catch (error) {
-    console.error("Error retrieving dashboard:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
@@ -35,24 +38,25 @@ export const getDashboard = async (req, res) => {
 export const updateDashboard = async (req, res) => {
   try {
     const dashboard = await Dashboard.findOneAndUpdate(
-      { user: req.params.userId },
+      { userId: req.params.userId },
       req.body,
       { new: true, runValidators: true }
-    ).populate("user");
+    );
     if (!dashboard) {
       return res.status(404).json({ message: "Dashboard not found" });
     }
     res.json(dashboard);
   } catch (error) {
-    console.error("Error updating dashboard:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
-// // Delete Dashboard for a specific user
+// Delete Dashboard for a specific user
 // export const deleteDashboard = async (req, res) => {
 //   try {
-//     const dashboard = await Dashboard.findOneAndDelete({ user: req.params.userId });
+//     const dashboard = await Dashboard.findOneAndDelete({
+//       userId: req.params.userId,
+//     });
 //     if (!dashboard) {
 //       return res.status(404).json({ message: "Dashboard not found" });
 //     }

@@ -1,7 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import AccountSettings from "../models/AccountSettingsModel.js";
-import auth from "../Middleware/authMiddleware.js";
+import { auth, authorizeRoles } from "../Middleware/authMiddleware.js";
 
 const router = express.Router();
 

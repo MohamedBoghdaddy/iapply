@@ -14,7 +14,6 @@ const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const sidebarRef = useRef(null);
   const { user } = useAuthContext(); // Access user from context
-  console.log("User in Sidebar:", user);
 
   const handleMouseEnter = () => {
     setIsCollapsed(false);
@@ -36,7 +35,7 @@ const Sidebar = () => {
       onMouseLeave={handleMouseLeave}
     >
       <div className="userdetails">
-        {user && <p>Welcome: {user.username}!</p>}
+        {user && <p>Welcome, {user.username}!</p>}
       </div>
       <button
         className="toggle-button"
