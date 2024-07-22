@@ -5,22 +5,11 @@ import useDashboard from "../../../hooks/useDashboard";
 import "../styles/Dashboard.css";
 
 const DashboardComponent = () => {
-  const { dashboard, fetchDashboard, updateDashboard, deleteDashboard } =
-    useDashboard();
+  const { jobData } = useDashboard(); // Replace with your actual data fetching logic
+
   const [chartData, setChartData] = useState([]);
 
-  useEffect(() => {
-    fetchDashboard();
-  }, [fetchDashboard]);
-
-  useEffect(() => {
-    if (dashboard && dashboard.analytics) {
-      // Transform the analytics data into the format required by the chart
-      const data = dashboard.analytics.jobsApplied || [];
-      setChartData(data);
-    }
-  }, [dashboard]);
-
+  
   // const handleUpdate = async () => {
   //   try {
   //     const updatedData = {
@@ -41,19 +30,16 @@ const DashboardComponent = () => {
   // };
 
   return (
-    
-      <div className="dashboard-container">
-        <h1>Dashboard</h1>
-
-        <div className="main-content">
-          <div className="charts-section">
-            <h3>Analytical Overview</h3>
-            <JobAppliedChart data={chartData} />
-          </div>
-          {/* <button onClick={handleUpdate}>Update Dashboard</button>
-          <button onClick={handleDelete}>Delete Dashboard</button> */}
-        </div>
+    <div className="page-content">
+      <h1>Dashboard</h1>
+      <div className="job-applied-chart">
+        {jobData ? (
+          <JobAppliedChart jobData={jobData} />
+        ) : (
+          <p>Loading chart...</p>
+        )}
       </div>
+    </div>
   );
 };
 

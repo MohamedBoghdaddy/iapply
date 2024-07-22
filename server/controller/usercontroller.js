@@ -16,9 +16,7 @@ export const createUser = async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    console.log("Hashing password...");
     const hashedPassword = await bcrypt.hash(password, 10);
-    console.log("Hashed password:", hashedPassword);
 
     const newUser = new User({
       username,
@@ -27,29 +25,14 @@ export const createUser = async (req, res) => {
       gender,
     });
 
-    // Save the user to the database
     await newUser.save();
 
-    // Create a dashboard for the new user
-    const newDashboard = new Dashboard({
-      userId: newUser._id,
-      data: {}, // Initialize with default data or an empty object
-    });
-
-    // Save the dashboard to the database
-    await newDashboard.save();
-
-    // Update the user with the dashboard reference
-    newUser.dashboard = newDashboard._id;
-    await newUser.save();
-
-    // Create a token
     const token = createToken(newUser._id);
+    res.cookie("token", token, { httpOnly: true, sameSite: "strict" });
 
     res.status(201).json({
       username: newUser.username,
       email: newUser.email,
-      token,
       user: {
         _id: newUser._id,
         username: newUser.username,
@@ -76,20 +59,18 @@ export const loginUser = async (req, res) => {
   }
 
   try {
-    // Check if the user exists
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: "User does not exist" });
     }
 
-    // Compare passwords
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: "Incorrect password" });
     }
 
-    // Generate token
     const token = createToken(user._id);
+    res.cookie("token", token, { httpOnly: true, sameSite: "strict" });
 
     res.status(200).json({
       message: "Login successful",
@@ -99,7 +80,6 @@ export const loginUser = async (req, res) => {
         email: user.email,
         gender: user.gender,
       },
-      token, // Send the token to the client
     });
   } catch (error) {
     console.error("Login error:", error);
@@ -108,21 +88,28 @@ export const loginUser = async (req, res) => {
 };
 
 export const logoutUser = async (req, res) => {
+  res.cookie("token", "", { maxAge: 1 });
+  res.status(200).json({ message: "Logout successful" });
+};
+
+export const getCurrentUser = async (req, res) => {
   try {
-    // Remove user from storage
-    localStorage.removeItem("user");
-    // Clear session data
-    req.session.destroy((err) => {
-      if (err) {
-        return res
-          .status(500)
-          .json({ message: "Logout failed", error: err.message });
-      }
-      res.clearCookie("connect.sid"); // Clear the session cookie
-      res.status(200).json({ message: "Logout successful" });
-    });
+    const token = req.cookies.token;
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded._id).select("-password");
+
+    if (!user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    res.status(200).json({ user });
   } catch (error) {
-    res.status(500).json({ message: "Logout failed", error: error.message });
+    console.error("Fetch current user error:", error);
+    res.status(500).json({ message: "Failed to fetch user" });
   }
 };
 
@@ -135,27 +122,9 @@ export const getUser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-export const getCurrentUser = async (req, res) => {
-  try {
-    const user = await User.findById(req.userId); // Use the user ID from the request object
-    if (!user) return res.status(404).json({ message: "User not found" });
-    res.json({ userId: req.user._id });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-
 export const updateUser = async (req, res) => {
-  const { id } = req.params;
+  const { userId } = req.params; // Adjusted parameter name
   const { username, email, password, gender } = req.body;
-
-  // Manual validation
-  if (!username || !email || !gender) {
-    return res
-      .status(400)
-      .json({ message: "username, email, and gender are required" });
-  }
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
@@ -165,14 +134,17 @@ export const updateUser = async (req, res) => {
   try {
     // Check if the new email is already used by another user
     const existingUserWithEmail = await User.findOne({ email });
-    if (existingUserWithEmail && existingUserWithEmail._id.toString() !== id) {
+    if (
+      existingUserWithEmail &&
+      existingUserWithEmail._id.toString() !== userId
+    ) {
       return res
         .status(400)
         .json({ message: "Email is already in use by another customer" });
     }
 
     // Find the user by id
-    const user = await User.findById(id);
+    const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }

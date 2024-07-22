@@ -1,4 +1,3 @@
-// context/DashboardContext.js
 import React, { createContext, useReducer, useEffect, useState } from "react";
 import axios from "axios";
 
@@ -94,6 +93,33 @@ const DashboardProvider = ({ children }) => {
     }
   }, [state.userId, loading]);
 
+  const updateUserAndUploadResume = async (userId, formData, cvFile) => {
+    const formDataToSend = new FormData();
+    Object.keys(formData).forEach((key) => {
+      formDataToSend.append(key, formData[key]);
+    });
+    if (cvFile) {
+      formDataToSend.append("resume", cvFile);
+    }
+
+    try {
+      const response = await axios.put(
+        `http://localhost:4000/api/users/${userId}`,
+        formDataToSend,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Failed to update user and upload resume", error);
+      throw error;
+    }
+  };
+
   return (
     <DashboardContext.Provider
       value={{
@@ -126,40 +152,6 @@ const DashboardProvider = ({ children }) => {
             throw error;
           }
         },
-        updateDashboard: async (data) => {
-          try {
-            const response = await axios.put(
-              `http://localhost:4000/api/dashboard/${state.userId}`,
-              data,
-              {
-                headers: {
-                  Authorization: `Bearer ${localStorage.getItem("token")}`,
-                  "Content-Type": "application/json",
-                },
-              }
-            );
-            return response.data;
-          } catch (error) {
-            console.error("Failed to update dashboard", error);
-            throw error;
-          }
-        },
-        // deleteDashboard: async () => {
-        //   try {
-        //     const response = await axios.delete(
-        //       `http://localhost:4000/api/dashboard/${state.userId}`,
-        //       {
-        //         headers: {
-        //           Authorization: `Bearer ${localStorage.getItem("token")}`,
-        //         },
-        //       }
-        //     );
-        //     return response.data;
-        //   } catch (error) {
-        //     console.error("Failed to delete dashboard", error);
-        //     throw error;
-        //   }
-        // },
         fetchAccountSettings: () =>
           fetchData(
             `http://localhost:4000/api/AccountSettings/${state.userId}`,
@@ -201,7 +193,7 @@ const DashboardProvider = ({ children }) => {
               {
                 headers: {
                   Authorization: `Bearer ${localStorage.getItem("token")}`,
-                  "Content-Type": "multipart/form-data",
+                  "Content-Type": "application/json",
                 },
               }
             );
@@ -211,6 +203,7 @@ const DashboardProvider = ({ children }) => {
             throw error;
           }
         },
+        updateUserAndUploadResume, // Add this function to context
       }}
     >
       {children}

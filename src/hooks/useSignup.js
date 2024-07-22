@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuthContext } from "./useAuthContext";
+import axios from "axios";
 
 export const useSignup = () => {
   const [username, setUsername] = useState("");
@@ -21,29 +22,22 @@ export const useSignup = () => {
     setSuccessMessage("");
 
     try {
-      const response = await fetch("http://localhost:4000/api/users/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      const response = await axios.post(
+        "http://localhost:4000/api/users/signup",
+        {
           username,
           email,
           password,
           gender,
-        }),
-      });
+        },
+        { withCredentials: true } // Ensure cookies are sent
+      );
 
-      const json = await response.json();
-
-      if (response.ok) {
-        setSuccessMessage("Registration successful");
-        localStorage.setItem("user", JSON.stringify(json));
-        dispatch({ type: "LOGIN", payload: json });
-      } else {
-        setErrorMessage(json.message || "Signup failed");
-      }
+      setSuccessMessage("Registration successful");
+      dispatch({ type: "LOGIN", payload: response.data.user });
     } catch (error) {
       console.error("Signup error:", error);
-      setErrorMessage("Signup failed");
+      setErrorMessage(error.response?.data?.message || "Signup failed");
     } finally {
       setIsLoading(false);
     }

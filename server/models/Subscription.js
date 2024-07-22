@@ -1,12 +1,12 @@
-// models/Subscription.js
 import mongoose from "mongoose";
 
 const subscriptionSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  planId: { type: String, required: true },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  planId: { type: mongoose.Schema.Types.ObjectId, ref: "Plan", required: true },
   orderId: { type: String, required: true },
   status: {
     type: String,
+    required: true,
     enum: ["PENDING", "ACTIVE", "CANCELLED"],
     default: "PENDING",
   },

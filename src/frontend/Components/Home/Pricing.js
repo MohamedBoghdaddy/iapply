@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import "../../Components/styles/Home.css";
 
 const Pricing = () => {
@@ -115,5 +116,6 @@ const Pricing = () => {
     </div>
   );
 };
+
 
 export default Pricing;

@@ -1,9 +1,13 @@
 import express from "express";
-import { uploadResume } from "../controller/profileController.js";
+import { updateUserAndUploadResume } from "../controller/profileController.js";
 import { auth, authorizeRoles } from "../Middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/upload-resume", auth, uploadResume); // Route to upload resume
+router.post(
+  "/update-user-and-upload-resume/:userId",
+  updateUserAndUploadResume
+);
+router.put("/api/users/:userId/update-and-upload", updateUserAndUploadResume);
 
 export default router;

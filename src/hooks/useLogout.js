@@ -1,22 +1,22 @@
 import { useCallback } from "react";
-import axios from "axios"; // Import axios for API requests
+import axios from "axios";
+import { useAuthContext } from "./useAuthContext";
 
 export const useLogout = () => {
+  const { dispatch } = useAuthContext();
+
   const logout = useCallback(async () => {
     try {
-      // Call the logout API endpoint
-      await axios.post("http://localhost:4000/api/users/logout"); // Adjust the endpoint URL as needed
-
-      // Remove user from storage
-      localStorage.removeItem("user");
-
-      // Dispatch logout action
-      dispatchEvent(new CustomEvent("LOGOUT"));
+      await axios.post(
+        "http://localhost:4000/api/users/logout",
+        {},
+        { withCredentials: true }
+      );
+      dispatch({ type: "LOGOUT" });
     } catch (error) {
       console.error("Logout error:", error);
-      // Handle logout error if needed
     }
-  }, []);
+  }, [dispatch]);
 
   return { logout };
 };

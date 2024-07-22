@@ -1,10 +1,9 @@
-// src/frontend/Components/Dashboard/UserProfile.js
 import React, { useState, useEffect, useContext } from "react";
 import { DashboardContext } from "../../../context/DashboardContext"; // Correct import
 import "../styles/Dashboard.css";
 
 const UserProfile = () => {
-  const { userProfile, updateUserProfile, fetchUserProfile } =
+  const { userProfile, updateUserAndUploadResume, fetchUserProfile } =
     useContext(DashboardContext);
 
   const [formData, setFormData] = useState({});
@@ -37,18 +36,8 @@ const UserProfile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = new FormData();
-
-    for (const key in formData) {
-      data.append(key, formData[key]);
-    }
-
-    if (cvFile) {
-      data.append("cv", cvFile);
-    }
-
     try {
-      await updateUserProfile(data);
+      await updateUserAndUploadResume(formData._id, formData, cvFile);
       alert("Profile updated successfully!");
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -121,6 +110,13 @@ const UserProfile = () => {
             value={formData.city || ""}
             onChange={handleInputChange}
           />
+          <input
+            type="text"
+            placeholder="Zip Code"
+            name="zipCode"
+            value={formData.zipCode || ""}
+            onChange={handleInputChange}
+          />
         </div>
 
         {/* Job Preferences */}
@@ -128,16 +124,65 @@ const UserProfile = () => {
           <h4>Job Preferences</h4>
           <input
             type="text"
-            placeholder="Job Title"
-            name="jobTitle"
-            value={formData.jobTitle || ""}
+            placeholder="Preferred Job Title"
+            name="preferredJobTitle"
+            value={formData.preferredJobTitle || ""}
             onChange={handleInputChange}
           />
           <input
             type="text"
-            placeholder="Preferred Salary"
-            name="preferredSalary"
-            value={formData.preferredSalary || ""}
+            placeholder="Preferred Job Location"
+            name="preferredJobLocation"
+            value={formData.preferredJobLocation || ""}
+            onChange={handleInputChange}
+          />
+          <input
+            type="text"
+            placeholder="Primary Skill"
+            name="primarySkill"
+            value={formData.primarySkill || ""}
+            onChange={handleInputChange}
+          />
+          <input
+            type="text"
+            placeholder="Secondary Skill"
+            name="secondarySkill"
+            value={formData.secondarySkill || ""}
+            onChange={handleInputChange}
+          />
+          <input
+            type="number"
+            placeholder="Years of Experience"
+            name="yearsOfExperience"
+            value={formData.yearsOfExperience || ""}
+            onChange={handleInputChange}
+          />
+          <textarea
+            placeholder="Summary"
+            name="summary"
+            value={formData.summary || ""}
+            onChange={handleInputChange}
+          />
+        </div>
+
+        {/* Work Experience */}
+        <div className="work-experience">
+          <h4>Work Experience</h4>
+          <textarea
+            placeholder="Work Experience"
+            name="workExperience"
+            value={formData.workExperience || ""}
+            onChange={handleInputChange}
+          />
+        </div>
+
+        {/* Education */}
+        <div className="education">
+          <h4>Education</h4>
+          <textarea
+            placeholder="Education"
+            name="education"
+            value={formData.education || ""}
             onChange={handleInputChange}
           />
         </div>

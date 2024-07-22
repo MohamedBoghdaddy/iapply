@@ -62,6 +62,7 @@ const App = () => {
               <Mininavbar />
               <Sidebar />
               <AccountSettings />
+              <Notifications/>
               <Footer />
             </>
           }

@@ -13,7 +13,6 @@ const PaymentHistory = () => {
   });
 
   useEffect(() => {
-    // Fetch payments from server
     axios
       .get("/api/payments", { params: filters })
       .then((response) => setPayments(response.data))
@@ -21,58 +20,32 @@ const PaymentHistory = () => {
   }, [filters]);
 
   const handleFilterChange = (e) => {
-    setFilters({
-      ...filters,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSearch = () => {
-    // Trigger re-fetch with updated filters
-    axios
-      .get("/api/payments", { params: filters })
-      .then((response) => setPayments(response.data))
-      .catch((error) => console.error("Error fetching payments:", error));
-  };
-
-  const handleReset = () => {
-    setFilters({
-      plan: "",
-      paymentMethod: "",
-      paymentStatus: "",
-      fromDate: "",
-      toDate: "",
-    });
-    // Trigger re-fetch with reset filters
-    axios
-      .get("/api/payments")
-      .then((response) => setPayments(response.data))
-      .catch((error) => console.error("Error fetching payments:", error));
+    setFilters({ ...filters, [e.target.name]: e.target.value });
   };
 
   return (
     <div className="payment-history">
-      <h3>Payment History</h3>
+      <h1>Payment History</h1>
       <div className="filters">
         <input
           type="text"
           name="plan"
-          value={filters.plan}
           placeholder="Plan"
+          value={filters.plan}
           onChange={handleFilterChange}
         />
         <input
           type="text"
           name="paymentMethod"
-          value={filters.paymentMethod}
           placeholder="Payment Method"
+          value={filters.paymentMethod}
           onChange={handleFilterChange}
         />
         <input
           type="text"
           name="paymentStatus"
-          value={filters.paymentStatus}
           placeholder="Payment Status"
+          value={filters.paymentStatus}
           onChange={handleFilterChange}
         />
         <input
@@ -87,49 +60,27 @@ const PaymentHistory = () => {
           value={filters.toDate}
           onChange={handleFilterChange}
         />
-        <button onClick={handleSearch}>Search</button>
-        <button onClick={handleReset}>Reset Filter</button>
       </div>
       <table>
         <thead>
           <tr>
             <th>Plan</th>
-            <th>Plan Amount</th>
-            <th>Discount Amount</th>
-            <th>Total Payment</th>
-            <th>Payment Method</th>
-            <th>Payment Date</th>
-            <th>Payment Status</th>
-            <th>Subscription Status</th>
-            <th>Subscription End Date</th>
-            <th>Remaining Days</th>
+            <th>Amount</th>
+            <th>Method</th>
+            <th>Status</th>
+            <th>Date</th>
           </tr>
         </thead>
         <tbody>
-          {payments.length > 0 ? (
-            payments.map((payment) => (
-              <tr key={payment._id}>
-                <td>{payment.plan}</td>
-                <td>${payment.planAmount}</td>
-                <td>${payment.discountAmount}</td>
-                <td>${payment.totalPayment}</td>
-                <td>{payment.paymentMethod}</td>
-                <td>{new Date(payment.paymentDate).toLocaleDateString()}</td>
-                <td>{payment.paymentStatus}</td>
-                <td>{payment.subscriptionStatus}</td>
-                <td>
-                  {new Date(payment.subscriptionEndDate).toLocaleDateString()}
-                </td>
-                <td>{payment.remainingDays}</td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="10" style={{ textAlign: "center" }}>
-                No payments found.
-              </td>
+          {payments.map((payment) => (
+            <tr key={payment._id}>
+              <td>{payment.plan}</td>
+              <td>{payment.planAmount}</td>
+              <td>{payment.paymentMethod}</td>
+              <td>{payment.paymentStatus}</td>
+              <td>{payment.paymentDate}</td>
             </tr>
-          )}
+          ))}
         </tbody>
       </table>
     </div>

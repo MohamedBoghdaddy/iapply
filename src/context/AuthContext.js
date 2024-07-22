@@ -1,5 +1,6 @@
 import React, { createContext, useReducer, useMemo, useEffect } from "react";
 import PropTypes from "prop-types";
+import axios from "axios";
 
 // Create a Context
 export const AuthContext = createContext();
@@ -17,16 +18,26 @@ export const authReducer = (state, action) => {
 };
 
 export const AuthContextProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(authReducer, { user: JSON.parse(localStorage.getItem("user"))
-  });
+  const [state, dispatch] = useReducer(authReducer, { user: null });
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:4000/api/users/current",
+          {
+            withCredentials: true, // Ensure cookies are sent
+          }
+        );
+        if (response.data.user) {
+          dispatch({ type: "LOGIN", payload: response.data.user });
+        }
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    };
 
-    if (user) {
-      dispatch({ type: "LOGIN", payload: user });
-      dispatch({ type: "SIGNUP", payload: user });
-    }
+    fetchUser();
   }, []);
 
   console.log("Authentication state:", state);

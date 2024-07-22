@@ -1,6 +1,7 @@
-// src/components/AccountSettings.js
+// Example usage in AccountSettings.js
 import React, { useState, useEffect } from "react";
 import useDashboard from "../../../hooks/useDashboard.js";
+import Notification from "./Notification.js";
 import "../styles/Dashboard.css";
 
 const AccountSettings = () => {
@@ -9,10 +10,8 @@ const AccountSettings = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    // Include other settings fields if needed
   });
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
+  const [notification, setNotification] = useState(null);
 
   useEffect(() => {
     if (accountSettings) {
@@ -20,7 +19,6 @@ const AccountSettings = () => {
         email: accountSettings.email || "",
         password: "",
         confirmPassword: "",
-        // Initialize other fields if necessary
       });
     }
   }, [accountSettings]);
@@ -33,32 +31,38 @@ const AccountSettings = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
+      setNotification({ type: "error", message: "Passwords do not match" });
       return;
     }
 
     try {
       const response = await updateAccountSettings(formData);
       if (response && response.status === 200) {
-        setSuccess("Account settings updated successfully!");
-        setError(null);
+        setNotification({
+          type: "success",
+          message: "Account settings updated successfully!",
+        });
       } else {
-        // Check if response.data exists before accessing it
-        setError(
-          response?.data?.message || "Failed to update account settings"
-        );
+        setNotification({
+          type: "error",
+          message:
+            response?.data?.message || "Failed to update account settings",
+        });
       }
     } catch (err) {
-      console.error("Update error:", err);
-      setError("An error occurred while updating settings");
+      setNotification({
+        type: "error",
+        message: "An error occurred while updating settings",
+      });
     }
   };
 
   return (
     <div className="account-settings">
       <h1>Account Settings</h1>
-      {error && <div className="error-message">{error}</div>}
-      {success && <div className="success-message">{success}</div>}
+      {notification && (
+        <Notification type={notification.type} message={notification.message} />
+      )}
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="email">Email:</label>
@@ -90,10 +94,7 @@ const AccountSettings = () => {
             onChange={handleInputChange}
           />
         </div>
-        {/* Add more fields as needed */}
-        <div className="form-group">
-          <button type="submit">Save Changes</button>
-        </div>
+        <button type="submit">Update Settings</button>
       </form>
     </div>
   );
