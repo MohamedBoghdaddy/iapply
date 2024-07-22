@@ -1,15 +1,19 @@
 import express from "express";
 import {
-  getDashboard,
   createDashboard,
+  getDashboard,
   updateDashboard,
+  // deleteDashboard,
 } from "../controller/dashboardController.js";
+import auth from "../Middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// Define your routes with proper parameterization
-router.get("/:userId", getDashboard); // Route to get dashboard by userId
-router.post("/", createDashboard); // Route to create dashboard
-router.put("/:userId", updateDashboard); // Route to update dashboard by userId
+router.use(auth);
+
+router.post("/", createDashboard);
+router.get("/:userId", getDashboard);
+router.put("/:userId", updateDashboard);
+// router.delete("/:userId", deleteDashboard);
 
 export default router;

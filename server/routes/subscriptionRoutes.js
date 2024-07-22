@@ -5,11 +5,13 @@ import {
   getSubscriptionPlans,
   verifyPayment,
 } from "../controller/subscriptionController.js";
+import auth from "../Middleware/authMiddleware.js";
 
 const router = express.Router();
+router.use(auth);
 
-router.post("/create-subscription", createSubscription); // Route to create a new subscription
-router.get("/subscription-plans", getSubscriptionPlans); // Route to fetch available subscription plans
-router.post("/verify-payment", verifyPayment); // Route to verify payment status
+router.post("/create-subscription", auth, createSubscription); // Route to create a new subscription
+router.get("/subscription-plans", auth, getSubscriptionPlans); // Route to fetch available subscription plans
+router.post("/verify-payment",  verifyPayment); // Route to verify payment status
 
 export default router;

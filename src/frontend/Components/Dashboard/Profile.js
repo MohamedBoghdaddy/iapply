@@ -3,22 +3,27 @@ import useDashboard from "../../../hooks/useDashboard";
 import "../styles/Dashboard.css";
 
 const UserProfile = () => {
-  const { updateUserProfile, fetchUserProfile } = useDashboard();
+  const { userProfile, updateUserProfile, fetchUserProfile } = useDashboard();
   const [formData, setFormData] = useState({});
   const [cvFile, setCvFile] = useState(null);
 
+  // Fetch user profile on component mount
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const profileData = await fetchUserProfile();
-        setFormData(profileData);
+        if (!userProfile) {
+          const profileData = await fetchUserProfile();
+          setFormData(profileData);
+        } else {
+          setFormData(userProfile); // Use userProfile if already available
+        }
       } catch (error) {
         console.error("Failed to fetch user profile:", error);
       }
     };
 
     fetchData();
-  }, [fetchUserProfile]);
+  }, [fetchUserProfile, userProfile]);
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -48,6 +53,10 @@ const UserProfile = () => {
       alert("Failed to update profile.");
     }
   };
+
+  if (!formData) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <div className="profile">

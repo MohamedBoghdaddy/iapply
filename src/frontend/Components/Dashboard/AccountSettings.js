@@ -43,7 +43,10 @@ const AccountSettings = () => {
         setSuccess("Account settings updated successfully!");
         setError(null);
       } else {
-        setError(response.data.message || "Failed to update account settings");
+        // Check if response.data exists before accessing it
+        setError(
+          response?.data?.message || "Failed to update account settings"
+        );
       }
     } catch (err) {
       console.error("Update error:", err);

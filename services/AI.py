@@ -1,9 +1,12 @@
 # Import necessary libraries and modules
+from flask import Flask, request, jsonify
 import textract
 from docx import Document
 from pdfminer.high_level import extract_text as extract_pdf_text
 from pdfminer.pdfparser import PDFSyntaxError
 import natural
+import nltk
+from nltk.tokenize import word_tokenize
 from sklearn.cluster import KMeans
 import requests
 from datetime import datetime
@@ -26,6 +29,9 @@ if env_path:
 
 # Constants
 ANTHROPICS_API_KEY = os.getenv('ANTHROPICS_API_KEY')
+
+
+
 
 # CV Text Extraction
 def parse_pdf(file_path):
@@ -86,7 +92,7 @@ def extract_text(file_path):
 class CVAnalyzer:
     def __init__(self, cv_text):
         self.cv_text = cv_text
-        self.tokenizer = natural.WordTokenizer()
+        self.tokenizer = nltk.tokenize.WordPunctTokenizer()
         self.tfidf = natural.TfIdf()
 
     def analyze_skills(self):
@@ -192,11 +198,42 @@ class MailService:
         except Exception as e:
             print(f"Error sending email: {e}")
 
+app = Flask(__name__)
+
+UPLOAD_FOLDER = '../../../../Documents'  # Adjust this path to where you want to save files
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    if 'file_path' not in request.files:
+        return jsonify({"error": "No file part"}), 400
+
+    file = request.files['file_path']
+    if file.filename == '':
+        return jsonify({"error": "No selected file"}), 400
+
+    if file:
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        return jsonify({"message": "File uploaded successfully", "filename": filename})
+
+    
+@app.route('/api/apply-jobs', methods=['POST'])
+def apply_jobs():
+    data = request.json
+    user_id = data.get('user_id')
+    cv = data.get('cv')
+    job_application = JobApplication(user_id, cv, {})
+    results = job_application.apply_to_jobs()
+    return jsonify(results)
+
+if __name__ == '__main__':
+    app.run(port=5000, debug=True)
 
 # Example usage:
 if __name__ == "__main__":
     # Example CV text extraction
-    cv_file_path = "path_to_your_cv.pdf"
+    cv_file_path = "../../../../Documents/Mohamed's Resume.pdf"
     cv_text = extract_text(cv_file_path)
 
     # Example job preferences
@@ -210,3 +247,4 @@ if __name__ == "__main__":
     # Example email sending
     mail_service = MailService()
     mail_service.send_mail("This is a test email", "recipient@example.com", "John Doe", "Test Email")
+

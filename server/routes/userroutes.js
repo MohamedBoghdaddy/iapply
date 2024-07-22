@@ -5,21 +5,18 @@ import {
   logoutUser,
   getUser,
   updateUser,
-  getDashboard,
+  getCurrentUser,
 } from "../controller/usercontroller.js";
+import auth from "../Middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// Define routes with userId as a parameter
 router.post("/signup", createUser);
 router.post("/login", loginUser);
 router.post("/logout", logoutUser);
 
-// Use parameterized routes for dynamic userId
-router.get("/:userId", getUser); // Get user by userId
-router.put("/:userId", updateUser); // Update user by userId
-
-// Dashboard routes might be handled separately
-router.get("/dashboard/:userId", getDashboard); // Get dashboard by userId
+router.get("/me", auth, getCurrentUser); // Secure route
+router.get("/:userId", auth, getUser);
+router.put("/:userId", auth, updateUser);
 
 export default router;

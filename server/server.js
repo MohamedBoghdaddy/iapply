@@ -95,14 +95,15 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-app.get("/api/app", async (req, res) => {
+app.post("/api/apply-jobs", async (req, res) => {
   try {
-    console.log("Sending request to Python server...");
-    const response = await axios.get("http://localhost:5000/api/app");
-    console.log("Received response from Python server:", response.data);
+    const response = await axios.post(
+      "http://localhost:5000/api/apply-jobs",
+      req.body
+    );
     res.json(response.data);
   } catch (error) {
-    console.error("Error communicating with Python server:", error.message);
+    console.error("Error communicating with AI server:", error.message);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });

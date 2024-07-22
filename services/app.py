@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 import logging
+import job_application_logic  # Hypothetical module
 
 app = Flask(__name__)
 
@@ -23,13 +24,14 @@ def upload():
 
     return jsonify({"message": "Text extracted successfully", "text": extracted_text})
 
-@app.route('/app', methods=['GET'])
-def get_data():
-    app.logger.info('Received request for /data')
-    data = {
-        'message': 'Hello from Python!'
-    }
-    return jsonify(data)
+@app.route('/api/apply-jobs', methods=['POST'])
+def apply_jobs():
+    data = request.json
+    user_id = data.get('user_id')
+    cv = data.get('cv')
+    # Process the CV and apply for jobs
+    results = job_application_logic.apply_jobs(user_id, cv)
+    return jsonify(results)
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
