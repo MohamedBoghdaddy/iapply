@@ -40,6 +40,7 @@ const App = () => {
               <Mininavbar />
               <Sidebar />
               <Dashboard />
+              <Footer />
             </>
           }
         />
@@ -49,9 +50,8 @@ const App = () => {
             <>
               <Mininavbar />
               <Sidebar />
-              {/* <DashboardProvider> */}
-                <Profile />
-              {/* </DashboardProvider> */}
+              <Profile />
+              <Footer />
             </>
           }
         />

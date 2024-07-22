@@ -1,6 +1,8 @@
 // components/JobAppliedChart.js
 import React from "react";
 import { Bar } from "react-chartjs-2";
+import "../styles/Dashboard.css";
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -35,22 +37,25 @@ const JobAppliedChart = ({ data }) => {
   };
 
   return (
-    <div>
-      <Bar
-        data={chartData}
-        options={{
-          responsive: true,
-          plugins: {
-            legend: {
-              position: "top",
+    <div className="chart-container">
+      <h3>Jobs Applied Overview</h3>
+      <div className="chart">
+        {" "}
+        <Bar
+          data={chartData}
+          options={{
+            responsive: true,
+            plugins: {
+              legend: {
+                position: "top",
+              },
+              title: {
+                display: false, // Title moved to header
+              },
             },
-            title: {
-              display: true,
-              text: "Jobs Applied Overview",
-            },
-          },
-        }}
-      />
+          }}
+        />
+      </div>
     </div>
   );
 };

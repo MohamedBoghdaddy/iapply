@@ -1,12 +1,11 @@
 /* General Styles */
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f5f5f5; /* Soft gray */
-  color: #333333; /* Charcoal */
-  overflow-y: auto; /* Enable vertical scroll if needed */
-  overflow-x: hidden; /* Hide horizontal scroll bar */
-  padding: 0;
+  font-family: 'Roboto', sans-serif; /* Modern, clean font */
+  background-color: #f5f5f5; /* Soft gray background */
+  color: #333333; /* Charcoal text */
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 /* Layout Sections */
@@ -16,18 +15,16 @@ body {
   justify-content: center;
   align-items: center;
   background-color: #ffffff; /* White background */
-  color: #333333; /* Charcoal text color */
+  color: #333333; /* Charcoal text */
   min-height: 100vh;
   width: 100%;
   scroll-behavior: smooth;
 }
-.hero-section {
-  background: url("../static/images/friendly-robot2.jpg");
-  background-size: cover;
-  background-position: center;
 
-  color: #ffffff; /* White text color */
-  padding: 150px 0;
+.hero-section {
+  background: url('../static/images/friendly-robot2.jpg') no-repeat center center/cover;
+  color: #ffffff; /* White text */
+  padding: 150px 20px;
   text-align: center;
   width: 100%;
   height: 100vh;
@@ -35,187 +32,227 @@ body {
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5); /* Subtle shadow */
+  position: relative;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3); /* Overlay for better text readability */
+  z-index: 1;
 }
 
 .hero-section h1 {
-  font-size: 2.5em;
+  font-size: 3.5em;
   margin-bottom: 20px;
-  font-family: "Beverly";
-  color: #2c3e50; /* Navy blue text color */
+  font-family: 'Bebas Neue', sans-serif; /* Bold and modern font */
+  color: #ecf0f1; /* Light text color for better contrast */
+  z-index: 2;
 }
 
 .hero-section p {
-  font-size: 1.2em;
+  font-size: 1.4em;
   margin-bottom: 30px;
-  font-family: "Aeonik Thin";
-  color: #2c3e50; /* Navy blue text color */
+  font-family: 'Open Sans', sans-serif;
+  color: #ecf0f1; /* Light text color */
+  z-index: 2;
 }
 
 .hero-section .btn-dark {
-  background-color: #2c3e50; /* Navy blue */
-  border-color: #2c3e50; /* Navy blue */
-  padding: 10px 20px;
-  font-size: 20px;
-}
-#who-we-are {
-  background-color: #f8f9fa;
-}
-
-#serve {
-  background-color: #e9ecef;
+  background-color: #34495e; /* Darker navy blue */
+  border: none;
+  color: #ffffff;
+  padding: 12px 24px;
+  font-size: 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  z-index: 2;
 }
 
-#how-it-works {
-  background-color: #f8f9fa;
+.hero-section .btn-dark:hover {
+  background-color: #2c3e50; /* Even darker navy blue */
+  transform: translateY(-2px); /* Subtle lift effect */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow on hover */
 }
 
-#features {
-  background-color: #e9ecef;
-}
-
+/* Layout Sections */
+#who-we-are,
+#how-it-works,
+#features,
 #pricing {
-  background-color: #f8f9fa;
+  padding: 60px 20px;
+}
+
+#who-we-are,
+#how-it-works,
+#pricing {
+  background-color: #f8f9fa; /* Light gray */
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+#serve,
+#features {
+  background-color: #e9ecef; /* Slightly darker gray */
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
 .pricing-card {
-  background-color: #fff;
+  background-color: #ffffff; /* White background */
   border: 1px solid #dee2e6;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 20px;
   margin: 20px;
-  text-align: left;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  transition: box-shadow 0.3s ease, transform 0.3s ease, background-color 0.3s ease;
+}
+
+.pricing-card:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+  transform: translateY(-5px); /* Slight lift effect */
+  background-color: #f0f0f0; /* Light gray background on hover */
 }
 
 .pricing-card h3 {
-  font-size: 24px;
+  font-size: 1.8em;
   margin-bottom: 10px;
+  color: #2c3e50; /* Darker text */
 }
 
 .pricing-card p {
-  font-size: 16px;
+  font-size: 1em;
+  color: #555555; /* Gray text */
 }
 
 .storytelling-section {
   background-color: #ffffff; /* White background */
-  padding: 40px;
-  width: 100%;
+  padding: 60px 20px;
+  display: flex;
+  flex-direction: column;
   gap: 30px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  border-radius: 12px;
 }
 
 .storytelling-section h2 {
-  color: #2c3e50; /* Navy blue text color */
-  font-size: 1.8em;
+  color: #34495e; /* Darker navy blue */
+  font-size: 2.2em;
   font-weight: bold;
-  font-family: "Beverly", Arial, sans-serif;
+  font-family: 'Bebas Neue', sans-serif;
   margin-bottom: 20px;
 }
 
 .storytelling-section p {
-  font-size: 1.1em;
-  line-height: 1.5em;
-  font-family: "Aeonik Thin", Arial, sans-serif;
-  color: #2c3e50; /* Navy blue text color */
+  font-size: 1.2em;
+  line-height: 1.6em;
+  font-family: 'Open Sans', sans-serif;
+  color: #34495e; /* Darker navy blue */
 }
 
 .section2 {
   display: flex;
   justify-content: center;
-  gap: 30px; /* Adjusted to 30px */
-  margin-top: 25px;
+  gap: 30px;
+  margin-top: 30px;
 }
 
 .section2 button {
   background-color: #f1c40f; /* Soft gold */
-  color: #2c3e50; /* Navy blue text color */
-  border: 2px solid #2c3e50; /* Navy blue border */
-  padding: 10px 20px;
+  color: #34495e; /* Darker navy blue text */
+  border: 2px solid #34495e; /* Matching border */
+  padding: 12px 24px;
   font-size: 1em;
-  transition: background 0.3s, color 0.3s;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .section2 button:hover {
-  background-color: #2c3e50; /* Navy blue on hover */
-  color: #ffffff; /* White text on hover */
-}
-
-.virtual-showroom {
-  padding: 40px;
-  background-color: #ecf0f1; /* Cream background */
-}
-
-.virtual-showroom h2 {
-  color: #2c3e50; /* Navy blue text color */
-  font-family: "Beverly", Arial, sans-serif;
-}
-
-.virtual-showroom p {
-  font-family: "Aeonik Thin", Arial, sans-serif;
-  font-size: 1.1em;
-  line-height: 1.5em;
-  color: #2c3e50; /* Navy blue text color */
+  background-color: #34495e; /* Darker navy blue */
+  color: #ffffff; /* White text */
+  transform: translateY(-2px); /* Subtle lift effect */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow on hover */
 }
 
 .contact-info {
   background-color: #ffffff; /* White background */
-  padding: 40px;
+  padding: 60px 20px;
   text-align: center;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
 .contact-info h2 {
-  color: #2c3e50; /* Navy blue text color */
-  font-family: "Beverly", Arial, sans-serif;
+  color: #34495e; /* Darker navy blue */
+  font-family: 'Bebas Neue', sans-serif;
 }
 
 .contact-info p {
-  font-size: 1.1em;
-  line-height: 1.5em;
-  font-family: "Aeonik Thin", Arial, sans-serif;
-  color: #2c3e50; /* Navy blue text color */
+  font-size: 1.2em;
+  line-height: 1.6em;
+  font-family: 'Open Sans', sans-serif;
+  color: #34495e; /* Darker navy blue */
 }
 
 .contact-info button {
   background-color: #f1c40f; /* Soft gold */
-  color: #2c3e50; /* Navy blue text color */
-  border: 2px solid #2c3e50; /* Navy blue border */
-  padding: 10px 20px;
-  transition: background 0.3s, color 0.3s;
+  color: #34495e; /* Darker navy blue text */
+  border: 2px solid #34495e; /* Matching border */
+  padding: 12px 24px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .contact-info button:hover {
-  background-color: #2c3e50; /* Navy blue on hover */
-  color: #ffffff; /* White text on hover */
+  background-color: #34495e; /* Darker navy blue */
+  color: #ffffff; /* White text */
+  transform: translateY(-2px); /* Subtle lift effect */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow on hover */
 }
 
 /* Additional Styling */
+.section {
+  color: #888;
+}
+
 .section-header {
-  font-size: 2em;
-  font-family: "Beverly", Arial, sans-serif;
-  color: #2c3e50; /* Navy blue text color */
+  font-size: 2.5em;
+  font-family: 'Bebas Neue', sans-serif;
+  color: #34495e; /* Darker navy blue */
   margin-bottom: 20px;
 }
 
 .section-content {
-  font-family: "Aeonik Thin", Arial, sans-serif;
-  color: #2c3e50; /* Navy blue text color */
-  font-size: 1.1em;
-  line-height: 1.5em;
+  font-family: 'Open Sans', sans-serif;
+  color: #34495e; /* Darker navy blue */
+  font-size: 1.2em;
+  line-height: 1.6em;
 }
 
 .button-primary {
   background-color: #e74c3c; /* Coral */
-  color: #ffffff; /* White text color */
+  color: #ffffff; /* White text */
   border: none;
-  padding: 10px 20px;
+  padding: 12px 24px;
   font-size: 1em;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background 0.3s, color 0.3s;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .button-primary:hover {
-  background-color: #c0392b; /* Darker Coral on hover */
+  background-color: #c0392b; /* Darker Coral */
+  transform: translateY(-2px); /* Subtle lift effect */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow on hover */
 }
-/* pricing.css */
 
+/* Pricing Styles */
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -235,12 +272,15 @@ body {
 .price_wrpr {
   height: 100%;
   border: 1px solid #ddd;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
 .price_box {
   padding: 20px;
+  background-color: #ffffff; /* White background */
+  transition: background-color 0.3s ease;
 }
 
 .price_details1,
@@ -274,55 +314,27 @@ ul li {
 
 .get_started,
 .continue {
-  background-color: #007bff;
+  background-color: #007bff; /* Bootstrap primary color */
   border: none;
-  padding: 10px 20px;
+  padding: 12px 24px;
   font-size: 1.1rem;
   color: #fff;
   cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .get_started:hover,
 .continue:hover {
-  background-color: #0056b3;
+  background-color: #0056b3; /* Darker blue */
+  transform: translateY(-2px); /* Subtle lift effect */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow on hover */
 }
 
 .btn-primary {
-  background-color: #007bff;
+  background-color: #007bff; /* Bootstrap primary color */
 }
 
 .m-auto {
   margin: auto;
-}
-
-
-.contact-info {
-  background-color: #ffffff; /* White background */
-  padding: 40px;
-  text-align: center;
-}
-
-.contact-info h2 {
-  color: #2c3e50; /* Navy blue text color */
-  font-family: "Beverly", Arial, sans-serif;
-}
-
-.contact-info p {
-  font-size: 1.1em;
-  line-height: 1.5em;
-  font-family: "Aeonik Thin", Arial, sans-serif;
-  color: #2c3e50; /* Navy blue text color */
-}
-
-.contact-info button {
-  background-color: #f1c40f; /* Soft gold */
-  color: #2c3e50; /* Navy blue text color */
-  border: 2px solid #2c3e50; /* Navy blue border */
-  padding: 10px 20px;
-  transition: background 0.3s, color 0.3s;
-}
-
-.contact-info button:hover {
-  background-color: #2c3e50; /* Navy blue on hover */
-  color: #ffffff; /* White text on hover */
 }

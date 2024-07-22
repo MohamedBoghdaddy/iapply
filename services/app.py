@@ -1,4 +1,3 @@
-# app.py
 from flask import Flask, request, jsonify
 from text_extraction import extract_text
 from job_application import JobApplication

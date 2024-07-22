@@ -4,7 +4,7 @@ import "../styles/Dashboard.css";
 const JobHistory = () => {
   return (
     <div className="job-history">
-      <h3>Job History</h3>
+      <h1>Job History</h1>
       <div className="filters">
         <input type="text" placeholder="Country" />
         <input type="text" placeholder="Job Title" />

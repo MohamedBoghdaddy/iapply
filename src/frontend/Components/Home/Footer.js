@@ -13,14 +13,18 @@ function Footer() {
     <section className="footer">
       <div className="footer-container">
         <div className="footer-col">
-          <h4>Hedj</h4>
+          <h4>HKI AI</h4>
           <p>
-            Discover elegance and comfort with Hedj, your trusted partner in
-            premium furniture. We offer a diverse range of high-quality pieces
-            designed to elevate your home. From timeless classics to modern
-            trends, we have something for every taste. Explore our collection
-            today and transform your space.
+            Welcome to HKI AI, where innovation meets excellence. We specialize
+            in leveraging cutting-edge AI technology to streamline your job
+            application process and enhance your career opportunities. Our
+            platform is designed to simplify your job search, applying to
+            thousands of positions globally with just a few clicks. Stay ahead
+            in the competitive job market with our tailored AI-driven solutions.
+            Connect with us and discover how we can help you achieve your career
+            goals.
           </p>
+
           <div className="icons">
             <a href="https://www.facebook.com/hedj.eg">
               <FontAwesomeIcon icon={faFacebookF} />

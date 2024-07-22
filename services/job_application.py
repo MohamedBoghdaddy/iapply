@@ -18,7 +18,7 @@ class JobApplication:
     def apply_to_jobs_api(self, clustered_jobs):
         try:
             response = requests.post(
-                "https://anthropics-api.com/apply",
+                "http://localhost:5000/api/apply",
                 json={"userId": self.user_id, "jobs": clustered_jobs},
                 headers={"Authorization": f"Bearer {os.getenv('ANTHROPICS_API_KEY')}", "Content-Type": "application/json"},
             )

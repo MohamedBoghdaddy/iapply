@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import JobAppliedChart from "./JobAppliedChart";
 import useDashboard from "../../../hooks/useDashboard";
+import "../styles/Dashboard.css";
 
 const DashboardComponent = () => {
   const { dashboard, fetchDashboard, updateDashboard, deleteDashboard } =
@@ -40,9 +41,10 @@ const DashboardComponent = () => {
   // };
 
   return (
-    <div>
-      <h1>Dashboard</h1>
-      <div className="app-container">
+    
+      <div className="dashboard-container">
+        <h1>Dashboard</h1>
+
         <div className="main-content">
           <div className="charts-section">
             <h3>Analytical Overview</h3>
@@ -52,7 +54,6 @@ const DashboardComponent = () => {
           <button onClick={handleDelete}>Delete Dashboard</button> */}
         </div>
       </div>
-    </div>
   );
 };
 
