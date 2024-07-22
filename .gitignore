@@ -16,3 +16,4 @@ src/api/test.py
 server/.env
 
 .env
+services/textract
