@@ -1,37 +1,41 @@
+# app.py
 from flask import Flask, request, jsonify
-import logging
-import job_application_logic  # Hypothetical module
+from text_extraction import extract_text
+from job_application import JobApplication
+from mail_service import MailService
+from werkzeug.utils import secure_filename
+import os
 
 app = Flask(__name__)
-
-# Configure logging
-logging.basicConfig(level=logging.DEBUG)
+UPLOAD_FOLDER = 'uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/upload', methods=['POST'])
-def upload():
-    data = request.json
-    file_path = data.get('file_path')
-    app.logger.debug(f'Received file path: {file_path}')
-    if not file_path:
-        return jsonify({"error": "No file path provided"}), 400
+def upload_file():
+    if 'file' not in request.files:
+        return jsonify({"error": "No file part"}), 400
 
-    # Simulate extracting text
-    extracted_text = "Sample extracted text"  # Placeholder for actual AI extraction logic
-    app.logger.debug(f'Extracted text: {extracted_text}')
-    # Remove the identity check as it is always False
-    # if extracted_text is None:
-    #    return jsonify({"error": "Failed to extract text"}), 500
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({"error": "No selected file"}), 400
 
-    return jsonify({"message": "Text extracted successfully", "text": extracted_text})
+    if file:
+        filename = secure_filename(file.filename)
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(file_path)
+        cv_text = extract_text(file_path)
+        return jsonify({"message": "File uploaded successfully", "filename": filename, "cv_text": cv_text})
 
 @app.route('/api/apply-jobs', methods=['POST'])
 def apply_jobs():
     data = request.json
     user_id = data.get('user_id')
-    cv = data.get('cv')
-    # Process the CV and apply for jobs
-    results = job_application_logic.apply_jobs(user_id, cv)
+    cv_text = data.get('cv')
+    preferences = data.get('preferences', {})
+    job_application = JobApplication(user_id, cv_text, preferences)
+    results = job_application.apply_to_jobs()
     return jsonify(results)
 
 if __name__ == '__main__':
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
     app.run(port=5000, debug=True)

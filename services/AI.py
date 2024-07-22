@@ -1,250 +1,250 @@
-# Import necessary libraries and modules
-from flask import Flask, request, jsonify
-import textract
-from docx import Document
-from pdfminer.high_level import extract_text as extract_pdf_text
-from pdfminer.pdfparser import PDFSyntaxError
-import natural
-import nltk
-from nltk.tokenize import word_tokenize
-from sklearn.cluster import KMeans
-import requests
-from datetime import datetime
-from dateutil.parser import parse
-from marshmallow import ValidationError
-import smtplib
-import ssl
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-import six
-from dotenv import load_dotenv
-import os
+# # Import necessary libraries and modules
+# from flask import Flask, request, jsonify
+# import textract
+# from docx import Document
+# from pdfminer.high_level import extract_text as extract_pdf_text
+# from pdfminer.pdfparser import PDFSyntaxError
+# import natural
+# import nltk
+# from nltk.tokenize import word_tokenize
+# from sklearn.cluster import KMeans
+# import requests
+# from datetime import datetime
+# from dateutil.parser import parse
+# from marshmallow import ValidationError
+# import smtplib
+# import ssl
+# from email.mime.multipart import MIMEMultipart
+# from email.mime.text import MIMEText
+# import six
+# from dotenv import load_dotenv
+# import os
 
-# Load environment variables from .env file
-load_dotenv()
+# # Load environment variables from .env file
+# load_dotenv()
 
-env_path = os.getenv('../server/.env')
-if env_path:
-    load_dotenv(dotenv_path=env_path)
+# env_path = os.getenv('../server/.env')
+# if env_path:
+#     load_dotenv(dotenv_path=env_path)
 
-# Constants
-ANTHROPICS_API_KEY = os.getenv('ANTHROPICS_API_KEY')
-
-
+# # Constants
+# ANTHROPICS_API_KEY = os.getenv('ANTHROPICS_API_KEY')
 
 
-# CV Text Extraction
-def parse_pdf(file_path):
-    """Extract text from a PDF file."""
-    try:
-        txt = extract_pdf_text(file_path).strip()
-        if not txt:
-            raise ValueError("Empty PDF content")
-        return txt
-    except FileNotFoundError:
-        print("File not found or path is incorrect")
-        raise
-    except PDFSyntaxError:
-        print("Not a valid PDF file")
-        raise
 
-def parse_docx(file_path):
-    """Extract text from a DOCX file."""
-    try:
-        doc = Document(file_path)
-        txt = "\n".join([paragraph.text for paragraph in doc.paragraphs]).strip()
-        if not txt:
-            raise ValueError("Empty DOCX content")
-        return txt
-    except FileNotFoundError:
-        print("File not found or path is incorrect")
-        raise
-    except Exception as e:
-        print("Error parsing DOCX file:", e)
-        raise
 
-def parse_doc(file_path):
-    """Extract text from a DOC file."""
-    try:
-        txt = textract.process(file_path).decode("utf-8").strip()
-        if not txt:
-            raise ValueError("Empty DOC content")
-        return txt
-    except FileNotFoundError:
-        print("File not found or path is incorrect")
-        raise
-    except Exception as e:
-        print("Error parsing DOC file:", e)
-        raise
+# # CV Text Extraction
+# def parse_pdf(file_path):
+#     """Extract text from a PDF file."""
+#     try:
+#         txt = extract_pdf_text(file_path).strip()
+#         if not txt:
+#             raise ValueError("Empty PDF content")
+#         return txt
+#     except FileNotFoundError:
+#         print("File not found or path is incorrect")
+#         raise
+#     except PDFSyntaxError:
+#         print("Not a valid PDF file")
+#         raise
 
-def extract_text(file_path):
-    """Extract text from a file based on its extension."""
-    if file_path.endswith(".pdf"):
-        return parse_pdf(file_path)
-    elif file_path.endswith(".docx"):
-        return parse_docx(file_path)
-    elif file_path.endswith(".doc"):
-        return parse_doc(file_path)
-    else:
-        raise ValueError("Unsupported file format")
+# def parse_docx(file_path):
+#     """Extract text from a DOCX file."""
+#     try:
+#         doc = Document(file_path)
+#         txt = "\n".join([paragraph.text for paragraph in doc.paragraphs]).strip()
+#         if not txt:
+#             raise ValueError("Empty DOCX content")
+#         return txt
+#     except FileNotFoundError:
+#         print("File not found or path is incorrect")
+#         raise
+#     except Exception as e:
+#         print("Error parsing DOCX file:", e)
+#         raise
 
-# CV Analyzer
-class CVAnalyzer:
-    def __init__(self, cv_text):
-        self.cv_text = cv_text
-        self.tokenizer = nltk.tokenize.WordPunctTokenizer()
-        self.tfidf = natural.TfIdf()
+# def parse_doc(file_path):
+#     """Extract text from a DOC file."""
+#     try:
+#         txt = textract.process(file_path).decode("utf-8").strip()
+#         if not txt:
+#             raise ValueError("Empty DOC content")
+#         return txt
+#     except FileNotFoundError:
+#         print("File not found or path is incorrect")
+#         raise
+#     except Exception as e:
+#         print("Error parsing DOC file:", e)
+#         raise
 
-    def analyze_skills(self):
-        """Analyze skills from CV using TF-IDF"""
-        words = self.tokenizer.tokenize(self.cv_text)
-        self.tfidf.addDocument(words)
-        return self.tfidf
+# def extract_text(file_path):
+#     """Extract text from a file based on its extension."""
+#     if file_path.endswith(".pdf"):
+#         return parse_pdf(file_path)
+#     elif file_path.endswith(".docx"):
+#         return parse_docx(file_path)
+#     elif file_path.endswith(".doc"):
+#         return parse_doc(file_path)
+#     else:
+#         raise ValueError("Unsupported file format")
 
-# Job Clustering
-def cluster_jobs(jobs, num_clusters=5):
-    """Cluster job descriptions using K-Means"""
-    descriptions = [job['description'] for job in jobs]
-    tfidf = natural.TfIdf()
-    for desc in descriptions:
-        tfidf.addDocument(desc)
+# # CV Analyzer
+# class CVAnalyzer:
+#     def __init__(self, cv_text):
+#         self.cv_text = cv_text
+#         self.tokenizer = nltk.tokenize.WordPunctTokenizer()
+#         self.tfidf = natural.TfIdf()
 
-    vectors = [tfidf.listTfIdf(desc) for desc in descriptions]
+#     def analyze_skills(self):
+#         """Analyze skills from CV using TF-IDF"""
+#         words = self.tokenizer.tokenize(self.cv_text)
+#         self.tfidf.addDocument(words)
+#         return self.tfidf
 
-    kmeans = KMeans(num_clusters)
-    clusters = kmeans.fit_predict(vectors)
+# # Job Clustering
+# def cluster_jobs(jobs, num_clusters=5):
+#     """Cluster job descriptions using K-Means"""
+#     descriptions = [job['description'] for job in jobs]
+#     tfidf = natural.TfIdf()
+#     for desc in descriptions:
+#         tfidf.addDocument(desc)
 
-    return clusters
+#     vectors = [tfidf.listTfIdf(desc) for desc in descriptions]
 
-class JobApplication:
-    def __init__(self, user_id, cv_text, preferences):
-        self.user_id = user_id
-        self.cv_text = cv_text
-        self.preferences = preferences
+#     kmeans = KMeans(num_clusters)
+#     clusters = kmeans.fit_predict(vectors)
 
-    def apply_to_jobs(self):
-        """Apply to jobs based on CV analysis and job clustering"""
-        try:
-            cv_analyzer = CVAnalyzer(self.cv_text)
-            tfidf = cv_analyzer.analyze_skills()
+#     return clusters
 
-            jobs = self.fetch_jobs(self.preferences)  # Fixed method call
+# class JobApplication:
+#     def __init__(self, user_id, cv_text, preferences):
+#         self.user_id = user_id
+#         self.cv_text = cv_text
+#         self.preferences = preferences
 
-            clustered_jobs = cluster_jobs(jobs)
+#     def apply_to_jobs(self):
+#         """Apply to jobs based on CV analysis and job clustering"""
+#         try:
+#             cv_analyzer = CVAnalyzer(self.cv_text)
+#             tfidf = cv_analyzer.analyze_skills()
 
-            response = self.apply_to_jobs_api(self.user_id, clustered_jobs)
+#             jobs = self.fetch_jobs(self.preferences)  # Fixed method call
 
-            return response
-        except Exception as e:
-            print("Error applying to jobs:", e)
-            raise
+#             clustered_jobs = cluster_jobs(jobs)
 
-    def fetch_jobs(self, preferences):
-        """Fetch jobs based on preferences."""
-        # Replace this with actual job fetching logic
-        jobs = [
-            {"description": "Job description 1"},
-            {"description": "Job description 2"},
-            {"description": "Job description 3"},
-            {"description": "Job description 4"},
-            {"description": "Job description 5"},
-        ]
-        return jobs
+#             response = self.apply_to_jobs_api(self.user_id, clustered_jobs)
 
-    def apply_to_jobs_api(self, user_id, clustered_jobs):
-        """Apply to Jobs using Anthropics API"""
-        try:
-            response = requests.post(  # Changed from axios to requests
-                "https://anthropics-api.com/apply",
-                json={"userId": user_id, "jobs": clustered_jobs},
-                headers={"Authorization": f"Bearer {ANTHROPICS_API_KEY}", "Content-Type": "application/json"},
-            )
-            return response.json()
-        except Exception as e:
-            print("Error applying to jobs via API:", e)
-            raise
+#             return response
+#         except Exception as e:
+#             print("Error applying to jobs:", e)
+#             raise
 
-class MailService:
-    SMTP_SERVER = "smtp.gmail.com"
-    PORT = 465
-    SENDER_EMAIL = "your_email@gmail.com"
-    PASSWORD = 'your_password_here'
-    CONTEXT = ssl.create_default_context()
+#     def fetch_jobs(self, preferences):
+#         """Fetch jobs based on preferences."""
+#         # Replace this with actual job fetching logic
+#         jobs = [
+#             {"description": "Job description 1"},
+#             {"description": "Job description 2"},
+#             {"description": "Job description 3"},
+#             {"description": "Job description 4"},
+#             {"description": "Job description 5"},
+#         ]
+#         return jobs
 
-    def send_mail(self, template, receiver_email, name, subject):
-        """Send email with plain text and HTML versions"""
-        message = MIMEMultipart('alternative')
-        message["Subject"] = subject
-        message["From"] = self.SENDER_EMAIL
-        message["To"] = receiver_email
+#     def apply_to_jobs_api(self, user_id, clustered_jobs):
+#         """Apply to Jobs using Anthropics API"""
+#         try:
+#             response = requests.post(  # Changed from axios to requests
+#                 "https://anthropics-api.com/apply",
+#                 json={"userId": user_id, "jobs": clustered_jobs},
+#                 headers={"Authorization": f"Bearer {ANTHROPICS_API_KEY}", "Content-Type": "application/json"},
+#             )
+#             return response.json()
+#         except Exception as e:
+#             print("Error applying to jobs via API:", e)
+#             raise
 
-        text = f"Hi, {name}\n{template}"
-        html = f"""\
-        <html>
-          <body>
-            <h2>Hi, {name}</h2>
-            <p>{template}</p>
-          </body>
-        </html>
-        """
+# class MailService:
+#     SMTP_SERVER = "smtp.gmail.com"
+#     PORT = 465
+#     SENDER_EMAIL = "your_email@gmail.com"
+#     PASSWORD = 'your_password_here'
+#     CONTEXT = ssl.create_default_context()
 
-        message.attach(MIMEText(text, "plain"))
-        message.attach(MIMEText(html, "html"))
+#     def send_mail(self, template, receiver_email, name, subject):
+#         """Send email with plain text and HTML versions"""
+#         message = MIMEMultipart('alternative')
+#         message["Subject"] = subject
+#         message["From"] = self.SENDER_EMAIL
+#         message["To"] = receiver_email
 
-        try:
-            with smtplib.SMTP_SSL(self.SMTP_SERVER, self.PORT, context=self.CONTEXT) as server:
-                server.login(self.SENDER_EMAIL, self.PASSWORD)
-                server.sendmail(self.SENDER_EMAIL, receiver_email, message.as_string())
-        except Exception as e:
-            print(f"Error sending email: {e}")
+#         text = f"Hi, {name}\n{template}"
+#         html = f"""\
+#         <html>
+#           <body>
+#             <h2>Hi, {name}</h2>
+#             <p>{template}</p>
+#           </body>
+#         </html>
+#         """
 
-app = Flask(__name__)
+#         message.attach(MIMEText(text, "plain"))
+#         message.attach(MIMEText(html, "html"))
 
-UPLOAD_FOLDER = '../../../../Documents'  # Adjust this path to where you want to save files
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+#         try:
+#             with smtplib.SMTP_SSL(self.SMTP_SERVER, self.PORT, context=self.CONTEXT) as server:
+#                 server.login(self.SENDER_EMAIL, self.PASSWORD)
+#                 server.sendmail(self.SENDER_EMAIL, receiver_email, message.as_string())
+#         except Exception as e:
+#             print(f"Error sending email: {e}")
 
-@app.route('/upload', methods=['POST'])
-def upload_file():
-    if 'file_path' not in request.files:
-        return jsonify({"error": "No file part"}), 400
+# app = Flask(__name__)
 
-    file = request.files['file_path']
-    if file.filename == '':
-        return jsonify({"error": "No selected file"}), 400
+# UPLOAD_FOLDER = '../../../../Documents'  # Adjust this path to where you want to save files
+# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-    if file:
-        filename = secure_filename(file.filename)
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        return jsonify({"message": "File uploaded successfully", "filename": filename})
+# @app.route('/upload', methods=['POST'])
+# def upload_file():
+#     if 'file_path' not in request.files:
+#         return jsonify({"error": "No file part"}), 400
+
+#     file = request.files['file_path']
+#     if file.filename == '':
+#         return jsonify({"error": "No selected file"}), 400
+
+#     if file:
+#         filename = secure_filename(file.filename)
+#         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+#         return jsonify({"message": "File uploaded successfully", "filename": filename})
 
     
-@app.route('/api/apply-jobs', methods=['POST'])
-def apply_jobs():
-    data = request.json
-    user_id = data.get('user_id')
-    cv = data.get('cv')
-    job_application = JobApplication(user_id, cv, {})
-    results = job_application.apply_to_jobs()
-    return jsonify(results)
+# @app.route('/api/apply-jobs', methods=['POST'])
+# def apply_jobs():
+#     data = request.json
+#     user_id = data.get('user_id')
+#     cv = data.get('cv')
+#     job_application = JobApplication(user_id, cv, {})
+#     results = job_application.apply_to_jobs()
+#     return jsonify(results)
 
-if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+# if __name__ == '__main__':
+#     app.run(port=5000, debug=True)
 
-# Example usage:
-if __name__ == "__main__":
-    # Example CV text extraction
-    cv_file_path = "../../../../Documents/Mohamed's Resume.pdf"
-    cv_text = extract_text(cv_file_path)
+# # Example usage:
+# if __name__ == "__main__":
+#     # Example CV text extraction
+#     cv_file_path = "../../../../Documents/Mohamed's Resume.pdf"
+#     cv_text = extract_text(cv_file_path)
 
-    # Example job preferences
-    preferences = {"location": "Remote", "experience_level": "Senior"}
+#     # Example job preferences
+#     preferences = {"location": "Remote", "experience_level": "Senior"}
 
-    # Example job application
-    job_application = JobApplication("user123", cv_text, preferences)
-    application_response = job_application.apply_to_jobs()
-    print("Application response:", application_response)
+#     # Example job application
+#     job_application = JobApplication("user123", cv_text, preferences)
+#     application_response = job_application.apply_to_jobs()
+#     print("Application response:", application_response)
 
-    # Example email sending
-    mail_service = MailService()
-    mail_service.send_mail("This is a test email", "recipient@example.com", "John Doe", "Test Email")
+#     # Example email sending
+#     mail_service = MailService()
+#     mail_service.send_mail("This is a test email", "recipient@example.com", "John Doe", "Test Email")
 
