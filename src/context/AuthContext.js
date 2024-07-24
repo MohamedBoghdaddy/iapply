@@ -1,55 +1,99 @@
-import React, { createContext, useReducer, useMemo, useEffect } from "react";
-import PropTypes from "prop-types";
+import React, { createContext, useReducer, useEffect } from "react";
 import axios from "axios";
 
-// Create a Context
-export const AuthContext = createContext();
+const AuthContext = createContext();
 
-export const authReducer = (state, action) => {
+const initialState = {
+  user: null,
+  isAuthenticated: false,
+  loading: true,
+};
+
+const authReducer = (state, action) => {
   switch (action.type) {
-    case "SIGNUP":
-    case "LOGIN":
-      return { user: action.payload };
-    case "LOGOUT":
-      return { user: null };
+    case "LOGIN_SUCCESS":
+      return {
+        ...state,
+        user: action.payload,
+        isAuthenticated: true,
+        loading: false,
+      };
+    case "LOGOUT_SUCCESS":
+      return {
+        ...state,
+        user: null,
+        isAuthenticated: false,
+        loading: false,
+      };
+    case "USER_LOADED":
+      return {
+        ...state,
+        user: action.payload,
+        isAuthenticated: true,
+        loading: false,
+      };
+    case "AUTH_ERROR":
+      return {
+        ...state,
+        user: null,
+        isAuthenticated: false,
+        loading: false,
+      };
     default:
       return state;
   }
 };
 
-export const AuthContextProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(authReducer, { user: null });
+export const AuthProvider = ({ children }) => {
+  const [state, dispatch] = useReducer(authReducer, initialState);
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const loadUser = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:4000/api/users/current",
-          {
-            withCredentials: true, // Ensure cookies are sent
-          }
-        );
-        if (response.data.user) {
-          dispatch({ type: "LOGIN", payload: response.data.user });
-        }
+        const response = await axios.get("/api/user", {
+          withCredentials: true,
+        });
+        dispatch({ type: "USER_LOADED", payload: response.data.user });
       } catch (error) {
-        console.error("Error fetching user:", error);
+        dispatch({ type: "AUTH_ERROR" });
       }
     };
-
-    fetchUser();
+    loadUser();
   }, []);
 
-  console.log("Authentication state:", state);
+  const login = async (credentials) => {
+    try {
+      const response = await axios.post("/api/login", credentials, {
+        withCredentials: true,
+      });
+      dispatch({ type: "LOGIN_SUCCESS", payload: response.data.user });
+    } catch (error) {
+      console.error("Login error:", error);
+    }
+  };
 
-  const contextValue = useMemo(() => ({ ...state, dispatch }), [state]);
+  const logout = async () => {
+    try {
+      await axios.post("/api/auth/users/logout", {}, { withCredentials: true });
+      dispatch({ type: "LOGOUT_SUCCESS" });
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
 
   return (
-    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
+    <AuthContext.Provider
+      value={{
+        user: state.user,
+        isAuthenticated: state.isAuthenticated,
+        loading: state.loading,
+        login,
+        logout,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
   );
 };
 
-// Adding PropTypes validation
-AuthContextProvider.propTypes = {
-  children: PropTypes.node.isRequired,
-};
+export default AuthContext;

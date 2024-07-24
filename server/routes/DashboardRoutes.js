@@ -13,7 +13,7 @@ router.use(auth);
 
 router.post("/", authorizeRoles, createDashboard);
 router.get("/:userId", getDashboard);
-router.put("/:userId", updateDashboard);
+router.put("/:userId", auth, updateDashboard);
 // router.delete("/:userId", deleteDashboard);
 
 export default router;

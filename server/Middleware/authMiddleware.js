@@ -2,13 +2,13 @@ import jwt from "jsonwebtoken";
 import User from "../models/UserModel.js";
 
 const auth = async (req, res, next) => {
-  const token = req.header("Authorization")?.replace("Bearer ", "");
+  const token = req.cookies.token;
 
   if (!token) return res.status(401).json({ message: "Access Denied" });
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = await User.findById(decoded.userId);
+    req.user = await User.findById(decoded._id);
     if (!req.user) return res.status(401).json({ message: "User not found" });
     next();
   } catch (error) {

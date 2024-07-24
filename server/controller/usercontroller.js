@@ -1,6 +1,5 @@
 import User from "../models/UserModel.js";
 import bcrypt from "bcrypt";
-import Dashboard from "../models/DashboardModel.js";
 import jwt from "jsonwebtoken";
 
 const createToken = (_id) => {
@@ -28,6 +27,7 @@ export const createUser = async (req, res) => {
     await newUser.save();
 
     const token = createToken(newUser._id);
+    req.session.userId = newUser._id;
     res.cookie("token", token, { httpOnly: true, sameSite: "strict" });
 
     res.status(201).json({
@@ -70,6 +70,7 @@ export const loginUser = async (req, res) => {
     }
 
     const token = createToken(user._id);
+    req.session.userId = user._id;
     res.cookie("token", token, { httpOnly: true, sameSite: "strict" });
 
     res.status(200).json({
@@ -88,8 +89,15 @@ export const loginUser = async (req, res) => {
 };
 
 export const logoutUser = async (req, res) => {
-  res.cookie("token", "", { maxAge: 1 });
-  res.status(200).json({ message: "Logout successful" });
+  req.session.destroy((err) => {
+    if (err) {
+      return res
+        .status(500)
+        .json({ message: "Logout failed", error: err.message });
+    }
+    res.clearCookie("token");
+    res.status(200).json({ message: "Logout successful" });
+  });
 };
 
 export const getCurrentUser = async (req, res) => {
@@ -122,75 +130,55 @@ export const getUser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 export const updateUser = async (req, res) => {
   const { userId } = req.params; // Adjusted parameter name
   const { username, email, password, gender } = req.body;
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    return res.status(400).json({ message: "Invalid email format" });
-  }
-
   try {
-    // Check if the new email is already used by another user
-    const existingUserWithEmail = await User.findOne({ email });
-    if (
-      existingUserWithEmail &&
-      existingUserWithEmail._id.toString() !== userId
-    ) {
-      return res
-        .status(400)
-        .json({ message: "Email is already in use by another customer" });
-    }
-
-    // Find the user by id
     const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-    // Update user fields
-    user.username = username;
-    user.email = email;
-    user.gender = gender;
-
-    // Hash the new password if it is provided
+    user.username = username || user.username;
+    user.email = email || user.email;
     if (password) {
-      if (password.length < 6) {
-        return res
-          .status(400)
-          .json({ message: "Password must be at least 6 characters long" });
-      }
-      user.password = await bcrypt.hash(password, 10);
+      const hashedPassword = await bcrypt.hash(password, 10);
+      user.password = hashedPassword;
     }
+    user.gender = gender || user.gender;
 
-    // Save the updated user to the database
     await user.save();
-
-    res.status(200).json({ message: "User updated successfully", user });
+    res.status(200).json(user);
   } catch (error) {
-    res.status(500).json({ message: "Update failed", error: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
-// Function to delete a user
-export const deleteUser = async (req, res) => {
-  const { id } = req.params;
+export const updateUserAndUploadResume = async (req, res) => {
+  const { userId } = req.params;
+  const { username, email, password, gender, countries, jobTitles } = req.body;
 
   try {
-    // Find the user by id and delete
-    const deletedUser = await User.findByIdAndDelete(id);
-    if (!deletedUser) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    res
-      .status(200)
-      .json({ message: "User deleted successfully", user: deletedUser });
-  } catch (error) {
-    res.status(500).json({ message: "Delete failed", error: error.message });
-  }
-};
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-export const getDashboard = (req, res) => {
-  res.json({ message: `Welcome to the dashboard, ${req.user.username}!` });
+    user.username = username || user.username;
+    user.email = email || user.email;
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      user.password = hashedPassword;
+    }
+    user.gender = gender || user.gender;
+    user.countries = countries || user.countries;
+    user.jobTitles = jobTitles || user.jobTitles;
+
+    if (req.file) {
+      user.cv = req.file.path;
+    }
+
+    await user.save();
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };

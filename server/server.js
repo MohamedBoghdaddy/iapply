@@ -8,26 +8,49 @@ import session from "express-session";
 import connectMongoDBSession from "connect-mongodb-session";
 import axios from "axios";
 import cookieParser from "cookie-parser";
-import { updateUserAndUploadResume } from "./controller/profileController.js"; // Updated import
-import userRoutes from "./routes/userroutes.js";
+import { updateUserAndUploadResume } from "./controller/profileController.js";
+import userroutes from "./routes/userroutes.js";
 import jobRoutes from "./routes/jobRoutes.js";
 import profileRoutes from "./routes/profileRoutes.js";
 import DashboardRoutes from "./routes/DashboardRoutes.js";
 import accountSettingsRoutes from "./routes/accountSettingRoutes.js";
 import analyticRoutes from "./routes/analyticRoutes.js";
 import User from "./models/UserModel.js";
-import { auth } from "./Middleware/authMiddleware.js"; // Fixed path
+import { auth, authorizeRoles } from "./Middleware/authMiddleware.js";
+import jwt from "jsonwebtoken";
 
 dotenv.config();
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
 const MongoDBStore = connectMongoDBSession(session);
+const JWT_SECRET = process.env.JWT_SECRET;
+const SESSION_SECRET = process.env.SESSION_SECRET;
+
+const store = new MongoDBStore({
+  uri: process.env.MONGO_URL,
+  collection: "sessions",
+});
 
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+
+// Configure session middleware
+app.use(
+  session({
+    secret: SESSION_SECRET, // Ensure this is set
+    resave: false,
+    saveUninitialized: false,
+    store: store,
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+    },
+  })
+);
 
 // Environment variables
 const PORT = process.env.PORT || 4000;
@@ -54,7 +77,7 @@ const razorpay = new Razorpay({
 });
 
 // User profile upload route
-app.post("/api/user/profile", upload.single("cv"), async (req, res) => {
+app.post("/api/users/profile", upload.single("cv"), async (req, res) => {
   const { countries, jobTitles } = req.body;
   const userId = req.user.id;
 
@@ -75,13 +98,13 @@ app.post("/api/user/profile", upload.single("cv"), async (req, res) => {
 });
 
 // Routes
-app.use("/api/users", userRoutes);
-app.use("/api/profile", profileRoutes);
+app.use("/api/users", userroutes);
+app.use("/api/users/:userId", profileRoutes);
 app.use("/api/AppliedJobRoutes", jobRoutes); // Updated to jobRoutes
 app.use("/api/analytics", analyticRoutes);
 app.use("/api/AccountSettings", accountSettingsRoutes);
 app.use("/api/Dashboard", DashboardRoutes);
-app.put("/api/users/:userId", auth, updateUserAndUploadResume); // Updated route
+app.use("/api/users/:userId", updateUserAndUploadResume);
 
 // Job application route
 app.post("/api/apply-jobs", async (req, res) => {

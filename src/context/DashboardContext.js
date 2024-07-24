@@ -104,7 +104,7 @@ const DashboardProvider = ({ children }) => {
 
     try {
       const response = await axios.put(
-        `http://localhost:4000/api/users/${userId}`,
+        `http://localhost:4000/api/users/${userId}/updateUserAndUploadResume`,
         formDataToSend,
         {
           headers: {
@@ -188,7 +188,7 @@ const DashboardProvider = ({ children }) => {
         updateUserProfile: async (data) => {
           try {
             const response = await axios.put(
-              `http://localhost:4000/api/users/${state.userId}`,
+              `http://localhost:4000/api/users/${state.userId}/updateUserAndUploadResume`,
               data,
               {
                 headers: {

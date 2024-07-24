@@ -1,19 +1,23 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { AuthContextProvider } from "./context/AuthContext";
+import { AuthProvider } from "./context/AuthContext";
 import { DashboardProvider } from "./context/DashboardContext";
 
-ReactDOM.render(
+// Create a root container
+const container = document.getElementById("root");
+const root = createRoot(container);
+
+// Render the App component
+root.render(
   <React.StrictMode>
-    <AuthContextProvider>
+    <AuthProvider>
       <DashboardProvider>
         <App />
       </DashboardProvider>
-    </AuthContextProvider>
-  </React.StrictMode>,
-  document.getElementById("root")
+    </AuthProvider>
+  </React.StrictMode>
 );
 
 reportWebVitals();

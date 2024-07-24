@@ -5,17 +5,15 @@ import { faUser, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
 import { Link as ScrollLink } from "react-scroll";
 import logo from "../static/images/logo.jpeg"; // Adjust path as per your project
-import Login from "../LoginSystem/Login/Login"; // Adjusted path to Login component
-import { useLogout } from "../../../hooks/useLogout";
+import Login from "../LoginSystem/Login/Login"; // Adjust path to Login component
 import { useAuthContext } from "../../../hooks/useAuthContext";
+import axios from "axios";
 
 const NavBar = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const navigate = useNavigate();
-  const { user } = useAuthContext(); // Get the user from AuthContext
-
-  const { logout } = useLogout();
+  const { user, dispatch } = useAuthContext(); // Get the user and dispatch from AuthContext
 
   const handleLoginModalOpen = () => {
     setShowLoginModal(true);
@@ -28,8 +26,13 @@ const NavBar = () => {
   const handleNavCollapse = () => setExpanded(!expanded);
 
   const handleLogout = async () => {
-    await logout(); // Await the logout function if it's async
-    navigate("/login");
+    try {
+      await axios.post("/api/auth/logout", {}, { withCredentials: true });
+      dispatch({ type: "LOGOUT_SUCCESS" });
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
   };
 
   return (
@@ -107,7 +110,6 @@ const NavBar = () => {
                 Dashboard
               </Nav.Link>
             )}
-
             <Nav.Link
               as={Link}
               to="/contact"
@@ -116,7 +118,7 @@ const NavBar = () => {
             >
               Contact Us
             </Nav.Link>
-            {user && (
+            {user ? (
               <div
                 className="nav-link"
                 role="button"
@@ -130,8 +132,7 @@ const NavBar = () => {
               >
                 <FontAwesomeIcon icon={faSignOutAlt} /> Logout
               </div>
-            )}
-            {!user && (
+            ) : (
               <div
                 className="nav-link"
                 role="button"

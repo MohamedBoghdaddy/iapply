@@ -3,11 +3,12 @@ import { updateUserAndUploadResume } from "../controller/profileController.js";
 import { auth, authorizeRoles } from "../Middleware/authMiddleware.js";
 
 const router = express.Router();
+router.post("/api/users/:userId/update-and-upload", updateUserAndUploadResume);
 
-router.post(
-  "/update-user-and-upload-resume/:userId",
+router.put(
+  "/api/users/:userId/update-and-upload",
+  auth,
   updateUserAndUploadResume
 );
-router.put("/api/users/:userId/update-and-upload", updateUserAndUploadResume);
 
 export default router;
