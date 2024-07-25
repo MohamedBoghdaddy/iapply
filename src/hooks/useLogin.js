@@ -39,10 +39,10 @@ export const useLogin = () => {
         const response = await axios.post(
           "http://localhost:4000/api/users/login",
           { email, password },
-          { withCredentials: true } // Ensure cookies are sent
+          { withCredentials: true }
         );
 
-        dispatch({ type: "LOGIN", payload: response.data.user });
+        dispatch({ type: "LOGIN_SUCCESS", payload: response.data.user });
 
         if (response.data.profileSetupRequired) {
           navigate("/");
@@ -50,7 +50,7 @@ export const useLogin = () => {
           navigate("/profile");
         }
       } catch (error) {
-        console.log("Login error:", error);
+        console.error("Login error:", error);
         setError(
           error.response?.data?.message ||
             "An error occurred. Please try again."

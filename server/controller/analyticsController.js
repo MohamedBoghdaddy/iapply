@@ -1,40 +1,68 @@
+import User from "../models/UserModel.js";
 import { AppliedJob } from "../models/AppliedJobModel.js";
-import { Subscription } from '../models/Subscription.js';
+import { Subscription } from "../models/Subscription.js";
 
-const getJobApplicationAnalytics = async (req, res) => {
+// Analytics for user data
+export const getUserAnalytics = async (req, res) => {
+  const { userId } = req.params;
+
   try {
-    // Example of using req object (e.g., accessing query parameters)
-    const userId = req.query.userId; // Assuming you want to filter analytics by userId from query params
-    
-    // Fetch and return job application analytics (e.g., count, success rate, trends)
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const totalApplications = await AppliedJob.countDocuments({
+      userId: userId,
+    });
+    const applicationsByStatus = await AppliedJob.aggregate([
+      { $match: { userId: userId } },
+      { $group: { _id: "$status", count: { $sum: 1 } } },
+    ]);
+
+    const analytics = {
+      totalApplications,
+      applicationsByStatus,
+    };
+
+    res.status(200).json(analytics);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Analytics for job applications
+export const getJobApplicationAnalytics = async (req, res) => {
+  try {
+    const userId = req.query.userId;
+
     const analyticsData = await AppliedJob.aggregate([
-      { $match: { status: "completed", userId: userId } }, // Example of using userId from req.query
+      { $match: { status: "completed", userId: userId } },
       { $group: { _id: "$userId", totalApplications: { $sum: 1 } } },
       { $sort: { totalApplications: -1 } },
     ]);
     res.status(200).json(analyticsData);
   } catch (error) {
-    console.error('Failed to fetch job application analytics:', error);
-    res.status(500).json({ message: 'Failed to fetch job application analytics', error });
+    console.error("Failed to fetch job application analytics:", error);
+    res
+      .status(500)
+      .json({ message: "Failed to fetch job application analytics", error });
   }
 };
 
-const getSubscriptionAnalytics = async (req, res) => {
+// Analytics for subscriptions
+export const getSubscriptionAnalytics = async (req, res) => {
   try {
-    // Example of using req object (e.g., accessing headers)
-    const authToken = req.headers.authorization; // Assuming you want to access authorization header
-    
-    // Fetch and return subscription analytics (e.g., active subscriptions, revenue)
-const analyticsData = await Subscription.aggregate([
-  { $match: { isActive: true } },
-  { $group: { _id: "$category", totalSubscriptions: { $sum: 1 } } },
-  { $sort: { totalSubscriptions: -1 } },
-]);
+    const authToken = req.headers.authorization;
+
+    const analyticsData = await Subscription.aggregate([
+      { $match: { isActive: true } },
+      { $group: { _id: "$category", totalSubscriptions: { $sum: 1 } } },
+      { $sort: { totalSubscriptions: -1 } },
+    ]);
     res.status(200).json(analyticsData);
   } catch (error) {
-    console.error('Failed to fetch subscription analytics:', error);
-    res.status(500).json({ message: 'Failed to fetch subscription analytics', error });
+    console.error("Failed to fetch subscription analytics:", error);
+    res
+      .status(500)
+      .json({ message: "Failed to fetch subscription analytics", error });
   }
 };
-
-export { getJobApplicationAnalytics, getSubscriptionAnalytics };

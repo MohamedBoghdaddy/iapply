@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from "react";
 import useDashboard from "../../../hooks/useDashboard.js";
 import Notification from "./Notification.js";
-import "../styles/Dashboard.css";
+import "../styles/AccountSetting.css";
+import Sidebar from "../Dashboard/Sidebar";
 
 const AccountSettings = () => {
   const { accountSettings, updateAccountSettings } = useDashboard();
@@ -28,37 +29,47 @@ const AccountSettings = () => {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-      setNotification({ type: "error", message: "Passwords do not match" });
-      return;
-    }
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (formData.password !== formData.confirmPassword) {
+    setNotification({ type: "error", message: "Passwords do not match" });
+    return;
+  }
+  if (formData.password.length < 8) {
+    // Example of additional validation
+    setNotification({
+      type: "error",
+      message: "Password must be at least 8 characters long",
+    });
+    return;
+  }
 
-    try {
-      const response = await updateAccountSettings(formData);
-      if (response && response.status === 200) {
-        setNotification({
-          type: "success",
-          message: "Account settings updated successfully!",
-        });
-      } else {
-        setNotification({
-          type: "error",
-          message:
-            response?.data?.message || "Failed to update account settings",
-        });
-      }
-    } catch (err) {
+  try {
+    const response = await updateAccountSettings(formData);
+    if (response && response.status === 200) {
+      setNotification({
+        type: "success",
+        message: "Account settings updated successfully!",
+      });
+    } else {
       setNotification({
         type: "error",
-        message: "An error occurred while updating settings",
+        message: response?.data?.message || "Failed to update account settings",
       });
     }
-  };
+  } catch (err) {
+    setNotification({
+      type: "error",
+      message: "An error occurred while updating settings",
+    });
+  }
+};
+
 
   return (
     <div className="account-settings">
+      <Sidebar />
+
       <h1>Account Settings</h1>
       {notification && (
         <Notification type={notification.type} message={notification.message} />

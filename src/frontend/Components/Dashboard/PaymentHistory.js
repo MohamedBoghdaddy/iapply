@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "../styles/Dashboard.css";
+import "../styles/PaymentHistory.css";
+import Sidebar from "../Dashboard/Sidebar";
 
 const PaymentHistory = () => {
   const [payments, setPayments] = useState([]);
@@ -25,6 +26,7 @@ const PaymentHistory = () => {
 
   return (
     <div className="payment-history">
+      <Sidebar />
       <h1>Payment History</h1>
       <div className="filters">
         <input
@@ -34,32 +36,7 @@ const PaymentHistory = () => {
           value={filters.plan}
           onChange={handleFilterChange}
         />
-        <input
-          type="text"
-          name="paymentMethod"
-          placeholder="Payment Method"
-          value={filters.paymentMethod}
-          onChange={handleFilterChange}
-        />
-        <input
-          type="text"
-          name="paymentStatus"
-          placeholder="Payment Status"
-          value={filters.paymentStatus}
-          onChange={handleFilterChange}
-        />
-        <input
-          type="date"
-          name="fromDate"
-          value={filters.fromDate}
-          onChange={handleFilterChange}
-        />
-        <input
-          type="date"
-          name="toDate"
-          value={filters.toDate}
-          onChange={handleFilterChange}
-        />
+        {/* Other filter inputs */}
       </div>
       <table>
         <thead>
@@ -75,10 +52,10 @@ const PaymentHistory = () => {
           {payments.map((payment) => (
             <tr key={payment._id}>
               <td>{payment.plan}</td>
-              <td>{payment.planAmount}</td>
-              <td>{payment.paymentMethod}</td>
-              <td>{payment.paymentStatus}</td>
-              <td>{payment.paymentDate}</td>
+              <td>{payment.amount}</td>
+              <td>{payment.method}</td>
+              <td>{payment.status}</td>
+              <td>{payment.date}</td>
             </tr>
           ))}
         </tbody>

@@ -8,8 +8,7 @@ const useDashboard = () => {
   if (!context) {
     throw new Error("useDashboard must be used within a DashboardProvider");
   }
-
-  const { dashboard, fetchDashboard, updateDashboard } = context;
+  const { appliedJobs } = context; // Assuming jobData corresponds to appliedJobs
 
   const updateUser = async (userId, userData) => {
     try {
@@ -117,9 +116,7 @@ const useDashboard = () => {
   };
 
   return {
-    dashboard,
-    fetchDashboard,
-    updateDashboard,
+    jobData: appliedJobs,
     updateUser,
     updateAccountSettings,
     updateUserAndUploadResume,

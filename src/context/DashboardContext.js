@@ -4,7 +4,6 @@ import axios from "axios";
 const DashboardContext = createContext();
 
 const initialState = {
-  dashboard: {},
   accountSettings: {},
   appliedJobs: [],
   userProfile: {},
@@ -12,7 +11,6 @@ const initialState = {
 };
 
 const ActionTypes = {
-  SET_DASHBOARD: "SET_DASHBOARD",
   SET_ACCOUNT_SETTINGS: "SET_ACCOUNT_SETTINGS",
   SET_APPLIED_JOBS: "SET_APPLIED_JOBS",
   SET_USER_PROFILE: "SET_USER_PROFILE",
@@ -21,8 +19,7 @@ const ActionTypes = {
 
 const dashboardReducer = (state, action) => {
   switch (action.type) {
-    case ActionTypes.SET_DASHBOARD:
-      return { ...state, dashboard: action.payload };
+   
     case ActionTypes.SET_ACCOUNT_SETTINGS:
       return { ...state, accountSettings: action.payload };
     case ActionTypes.SET_APPLIED_JOBS:
@@ -37,7 +34,6 @@ const dashboardReducer = (state, action) => {
 };
 
 const DashboardProvider = ({ children }) => {
-  const [dashboard, setDashboard] = useState(null);
   const [state, dispatch] = useReducer(dashboardReducer, initialState);
   const [loading, setLoading] = useState(true);
 
@@ -74,10 +70,7 @@ const DashboardProvider = ({ children }) => {
 
   useEffect(() => {
     if (!loading && state.userId) {
-      fetchData(
-        `http://localhost:4000/api/dashboard/${state.userId}`,
-        ActionTypes.SET_DASHBOARD
-      );
+      
       fetchData(
         `http://localhost:4000/api/AccountSettings/${state.userId}`,
         ActionTypes.SET_ACCOUNT_SETTINGS
@@ -123,35 +116,12 @@ const DashboardProvider = ({ children }) => {
   return (
     <DashboardContext.Provider
       value={{
-        dashboard: state.dashboard,
         accountSettings: state.accountSettings,
         appliedJobs: state.appliedJobs,
         userProfile: state.userProfile,
         userId: state.userId,
 
-        fetchDashboard: () =>
-          fetchData(
-            `http://localhost:4000/api/dashboard/${state.userId}`,
-            ActionTypes.SET_DASHBOARD
-          ),
-        updateDashboard: async (data) => {
-          try {
-            const response = await axios.put(
-              `http://localhost:4000/api/dashboard/${state.userId}`,
-              data,
-              {
-                headers: {
-                  Authorization: `Bearer ${localStorage.getItem("token")}`,
-                  "Content-Type": "application/json",
-                },
-              }
-            );
-            return response.data;
-          } catch (error) {
-            console.error("Failed to update dashboard", error);
-            throw error;
-          }
-        },
+     
         fetchAccountSettings: () =>
           fetchData(
             `http://localhost:4000/api/AccountSettings/${state.userId}`,

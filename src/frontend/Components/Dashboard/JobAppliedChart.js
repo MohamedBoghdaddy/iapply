@@ -10,6 +10,7 @@ import {
   CategoryScale,
   LinearScale,
 } from "chart.js";
+import "../styles/JobAppliedChart.css";
 
 // Register necessary components for ChartJS
 ChartJS.register(
@@ -22,18 +23,18 @@ ChartJS.register(
 );
 
 const JobAppliedChart = ({ jobData }) => {
-  const data = {
-    labels: jobData.map((job) => job.month),
-    datasets: [
-      {
-        label: "Jobs Applied",
-        data: jobData.map((job) => job.count),
-        backgroundColor: "rgba(75, 192, 192, 0.2)",
-        borderColor: "rgba(75, 192, 192, 1)",
-        borderWidth: 1,
-      },
-    ],
-  };
+ const data = {
+   labels: jobData.length ? jobData.map((job) => job.month) : ["No Data"],
+   datasets: [
+     {
+       label: "Jobs Applied",
+       data: jobData.length ? jobData.map((job) => job.count) : [0],
+       backgroundColor: "rgba(75, 192, 192, 0.2)",
+       borderColor: "rgba(75, 192, 192, 1)",
+       borderWidth: 1,
+     },
+   ],
+ };
 
   const options = {
     responsive: true,

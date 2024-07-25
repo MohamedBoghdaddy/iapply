@@ -38,9 +38,7 @@ const App = () => {
           element={
             <>
               <Mininavbar />
-              <Sidebar />
               <Dashboard />
-              <Footer />
             </>
           }
         />
@@ -49,9 +47,7 @@ const App = () => {
           element={
             <>
               <Mininavbar />
-              <Sidebar />
               <Profile />
-              <Footer />
             </>
           }
         />
@@ -60,10 +56,8 @@ const App = () => {
           element={
             <>
               <Mininavbar />
-              <Sidebar />
               <AccountSettings />
               <Notifications />
-              <Footer />
             </>
           }
         />
@@ -72,10 +66,9 @@ const App = () => {
           element={
             <>
               <Mininavbar />
-              <Sidebar />
               <JobHistory />
               <ApplyToJobs />
-              <Footer />
+
             </>
           }
         />
@@ -84,7 +77,6 @@ const App = () => {
           element={
             <>
               <Mininavbar />
-              <Sidebar />
               <PaymentHistory />
               <Footer />
             </>

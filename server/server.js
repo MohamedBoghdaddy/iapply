@@ -12,7 +12,6 @@ import { updateUserAndUploadResume } from "./controller/profileController.js";
 import userroutes from "./routes/userroutes.js";
 import jobRoutes from "./routes/jobRoutes.js";
 import profileRoutes from "./routes/profileRoutes.js";
-import DashboardRoutes from "./routes/DashboardRoutes.js";
 import accountSettingsRoutes from "./routes/accountSettingRoutes.js";
 import analyticRoutes from "./routes/analyticRoutes.js";
 import User from "./models/UserModel.js";
@@ -77,34 +76,24 @@ const razorpay = new Razorpay({
 });
 
 // User profile upload route
-app.post("/api/users/profile", upload.single("cv"), async (req, res) => {
-  const { countries, jobTitles } = req.body;
-  const userId = req.user.id;
-
-  try {
-    const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ error: "User not found" });
-
-    user.cv = req.file.path;
-    user.countries = countries;
-    user.jobTitles = jobTitles;
-    await user.save();
-
-    res.sendStatus(200);
-  } catch (err) {
-    console.error("Error saving user profile:", err);
-    res.status(500).json({ error: "Server error" });
-  }
-});
+app.post(
+  "/api/users/profile",
+  upload.single("cv"),
+  auth,
+  authorizeRoles("admin", "user"),
+  updateUserAndUploadResume
+);
 
 // Routes
 app.use("/api/users", userroutes);
+app.use("/api/users/:userId", userroutes);
 app.use("/api/users/:userId", profileRoutes);
 app.use("/api/AppliedJobRoutes", jobRoutes); // Updated to jobRoutes
 app.use("/api/analytics", analyticRoutes);
 app.use("/api/AccountSettings", accountSettingsRoutes);
-app.use("/api/Dashboard", DashboardRoutes);
 app.use("/api/users/:userId", updateUserAndUploadResume);
+app.use("/api/jobs", jobRoutes);
+app.use("/api/profiles", profileRoutes);
 
 // Job application route
 app.post("/api/apply-jobs", async (req, res) => {

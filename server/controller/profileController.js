@@ -1,7 +1,9 @@
-import axios from "axios";
 import User from "../models/UserModel.js";
+import axios from "axios";
 import textract from "textract";
 import bcrypt from "bcrypt";
+import path from "path";
+import fs from "fs";
 
 // Controller function to handle user update and resume upload
 export const updateUserAndUploadResume = async (req, res) => {
@@ -96,7 +98,6 @@ export const updateUserAndUploadResume = async (req, res) => {
     user.linkedin = linkedin || user.linkedin;
     user.github = github || user.github;
     user.education = education || user.education;
-    user.cv = cv || user.cv;
     user.countries = countries || user.countries;
     user.jobTitles = jobTitles || user.jobTitles;
     user.applicationHistory = applicationHistory || user.applicationHistory;
@@ -116,7 +117,14 @@ export const updateUserAndUploadResume = async (req, res) => {
 
     // Handle resume file upload and processing if file is provided
     if (resumeFile) {
-      const resumePath = resumeFile.path;
+      const resumePath = path.join(
+        __dirname,
+        "../uploads",
+        resumeFile.filename
+      );
+
+      // Move file to the desired location
+      fs.renameSync(resumeFile.path, resumePath);
 
       // Extract text from the resume
       const resumeText = await new Promise((resolve, reject) => {
@@ -129,7 +137,7 @@ export const updateUserAndUploadResume = async (req, res) => {
       });
 
       // Update user with resume text and URL
-      user.resume = resumeText;
+      user.cv = resumeText; // Save the extracted text in 'cv' field
       user.resumeUrl = resumePath; // Save file path or URL in the database
       await user.save();
 
@@ -162,5 +170,67 @@ export const updateUserAndUploadResume = async (req, res) => {
       message: "Failed to update user, upload resume, and apply to jobs",
       error: error.message,
     });
+  }
+};
+
+// Controller function to create a profile (if needed, though you have no profileModel.js)
+export const createProfile = async (req, res) => {
+  const { userId, bio, location, socialLinks } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Simulate profile creation as a part of the User model
+    user.bio = bio || user.bio;
+    user.location = location || user.location;
+    user.socialLinks = socialLinks || user.socialLinks;
+
+    await user.save();
+    res.status(201).json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Controller function to get user profile
+export const getProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Controller function to update user profile
+export const updateProfile = async (req, res) => {
+  const { userId } = req.params;
+  const { bio, location, socialLinks } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    user.bio = bio || user.bio;
+    user.location = location || user.location;
+    user.socialLinks = socialLinks || user.socialLinks;
+
+    await user.save();
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Controller function to delete user profile
+export const deleteProfile = async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.status(200).json({ message: "Profile deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

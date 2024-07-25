@@ -6,27 +6,30 @@ const ApplyToJobs = ({ userId, cvText, preferences }) => {
   const [response, setResponse] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const handleApplyToJobs = async () => {
-    setLoading(true);
-    try {
-      const result = await axios.post(
-        "http://localhost:4000/api/AppliedJobRoutes/job",
-        {
-          userId,
-          cvText, // Sending CV text to the backend
-          jobDetails: preferences,
-        }
-      );
-      setResponse(result.data.appliedJob);
-    } catch (error) {
-      console.error("Error applying to jobs:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+ const handleApplyToJobs = async () => {
+   setLoading(true);
+   try {
+     const result = await axios.post(
+       "http://localhost:4000/api/AppliedJobRoutes/job",
+       {
+         userId,
+         cvText,
+         jobDetails: preferences,
+       }
+     );
+     setResponse(result.data.appliedJob);
+   } catch (error) {
+     console.error("Error applying to jobs:", error);
+     alert("Failed to apply for jobs. Please try again.");
+   } finally {
+     setLoading(false);
+   }
+ };
+
 
   return (
     <div className="apply-to-jobs-container">
+
       <button
         className="apply-button"
         onClick={handleApplyToJobs}

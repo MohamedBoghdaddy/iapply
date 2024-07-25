@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from "react";
 import useDashboard from "../../../hooks/useDashboard";
 import { DashboardContext } from "./context/DashboardContext";
 
-import "../styles/Dashboard.css";
+import "../styles/JobApplication.css";
 
 const JobApplications = () => {
   const { appliedJobs, fetchAppliedJobs } = useContext(DashboardContext);

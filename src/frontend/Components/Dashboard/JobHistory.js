@@ -1,9 +1,22 @@
-import React from "react";
-import "../styles/Dashboard.css";
+import React, { useState } from "react";
+import "../styles/JobHistory.css";
+import Sidebar from "../Dashboard/Sidebar";
+
+
+
+
+const handleSearch = () => {
+  // Implement search functionality here
+};
 
 const JobHistory = () => {
+
+    const [jobHistory, setJobHistory] = useState([]);
+
   return (
     <div className="job-history">
+      <Sidebar />
+
       <h1>Job History</h1>
       <div className="filters">
         <input type="text" placeholder="Country" />

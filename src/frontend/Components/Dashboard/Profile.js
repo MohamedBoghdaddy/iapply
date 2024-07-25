@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
+import Sidebar from "../Dashboard/Sidebar"
 import { DashboardContext } from "../../../context/DashboardContext"; // Correct import
-import "../styles/Dashboard.css";
+import "../styles/UserProfile.css";
 
 const UserProfile = () => {
   const { userProfile, updateUserAndUploadResume, fetchUserProfile } =
@@ -45,12 +46,13 @@ const UserProfile = () => {
     }
   };
 
-  if (!formData) {
-    return <p>Loading...</p>;
-  }
 
   return (
     <div className="profile">
+      <Sidebar
+      
+      />
+
       <h1>Profile Setup</h1>
       <form onSubmit={handleSubmit}>
         {/* Personal Information */}

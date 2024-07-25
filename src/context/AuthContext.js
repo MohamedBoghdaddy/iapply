@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const loadUser = async () => {
       try {
-        const response = await axios.get("/api/user", {
+        const response = await axios.get("http://localhost:4000/api/user", {
           withCredentials: true,
         });
         dispatch({ type: "USER_LOADED", payload: response.data.user });
@@ -63,9 +63,13 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     try {
-      const response = await axios.post("/api/login", credentials, {
-        withCredentials: true,
-      });
+      const response = await axios.post(
+        "http://localhost:4000/api/users/login",
+        credentials,
+        {
+          withCredentials: true,
+        }
+      );
       dispatch({ type: "LOGIN_SUCCESS", payload: response.data.user });
     } catch (error) {
       console.error("Login error:", error);
@@ -74,7 +78,11 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await axios.post("/api/auth/users/logout", {}, { withCredentials: true });
+      await axios.post(
+        "http://localhost:4000/api/auth/users/logout",
+        {},
+        { withCredentials: true }
+      );
       dispatch({ type: "LOGOUT_SUCCESS" });
     } catch (error) {
       console.error("Logout error:", error);
