@@ -1,7 +1,7 @@
 import React, { createContext, useReducer, useEffect, useState } from "react";
 import axios from "axios";
 
-const DashboardContext = createContext();
+export const DashboardContext = createContext();
 
 const initialState = {
   accountSettings: {},
@@ -19,7 +19,6 @@ const ActionTypes = {
 
 const dashboardReducer = (state, action) => {
   switch (action.type) {
-   
     case ActionTypes.SET_ACCOUNT_SETTINGS:
       return { ...state, accountSettings: action.payload };
     case ActionTypes.SET_APPLIED_JOBS:
@@ -34,6 +33,7 @@ const dashboardReducer = (state, action) => {
 };
 
 const DashboardProvider = ({ children }) => {
+  const [notifications, setNotifications] = useState([]);
   const [state, dispatch] = useReducer(dashboardReducer, initialState);
   const [loading, setLoading] = useState(true);
 
@@ -70,7 +70,6 @@ const DashboardProvider = ({ children }) => {
 
   useEffect(() => {
     if (!loading && state.userId) {
-      
       fetchData(
         `http://localhost:4000/api/AccountSettings/${state.userId}`,
         ActionTypes.SET_ACCOUNT_SETTINGS
@@ -116,12 +115,11 @@ const DashboardProvider = ({ children }) => {
   return (
     <DashboardContext.Provider
       value={{
+        notifications,
         accountSettings: state.accountSettings,
         appliedJobs: state.appliedJobs,
         userProfile: state.userProfile,
         userId: state.userId,
-
-     
         fetchAccountSettings: () =>
           fetchData(
             `http://localhost:4000/api/AccountSettings/${state.userId}`,
@@ -173,7 +171,7 @@ const DashboardProvider = ({ children }) => {
             throw error;
           }
         },
-        updateUserAndUploadResume, // Add this function to context
+        updateUserAndUploadResume,
       }}
     >
       {children}
@@ -181,4 +179,4 @@ const DashboardProvider = ({ children }) => {
   );
 };
 
-export { DashboardProvider, DashboardContext };
+export { DashboardProvider };

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import JobAppliedChart from "./JobAppliedChart";
 import useDashboard from "../../../hooks/useDashboard";
 import "../styles/Dashboard.css";
-import Sidebar from "../Dashboard/Sidebar";
 
 const Dashboard = () => {
   const { jobData } = useDashboard(); // Replace with your actual data fetching logic
@@ -18,8 +17,6 @@ const Dashboard = () => {
 
   return (
     <div className="page-content">
-      <Sidebar />
-
       <h1>Dashboard</h1>
       <div className="job-applied-chart">
         {chartData.length > 0 && <JobAppliedChart jobData={chartData} />}
