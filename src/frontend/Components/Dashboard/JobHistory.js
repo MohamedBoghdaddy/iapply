@@ -15,7 +15,7 @@ const JobHistory = () => {
 
   return (
     <div className="job-history">
-      <Sidebar />
+      {/* <Sidebar /> */}
 
       <h1>Job History</h1>
       <div className="filters">

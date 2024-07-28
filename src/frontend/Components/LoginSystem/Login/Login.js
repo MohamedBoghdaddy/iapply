@@ -1,36 +1,28 @@
-import React, { useState, useContext } from "react";
+// Login.js
+import React from "react";
 import "../../styles/login.css"; // Adjust the path as needed
 import { Link } from "react-router-dom";
-import { useLogin } from "../../../../hooks/useLogin"; // Adjust the path as needed
-import AuthContext from "../../../../context/AuthContext";
+import LoginHook from "../../../../hooks/LoginHook";
 
 const Login = () => {
-  const { login } = useContext(AuthContext);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError(null);
-    try {
-      await login({ email, password });
-    } catch (err) {
-      setError("Failed to login. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    showPassword,
+    setShowPassword,
+    error,
+    isLoading,
+    handleLogin,
+  } = LoginHook();
 
   return (
     <div className="main-container">
       <div className="login-container">
         <div className="left-login">
           <h2>Login</h2>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleLogin}>
             <div className="field">
               <div className="field-wrapper">
                 <label htmlFor="email">Email:</label>

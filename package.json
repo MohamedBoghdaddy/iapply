@@ -7,9 +7,12 @@
     "@fortawesome/free-brands-svg-icons": "^6.5.2",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@syncfusion/ej2-react-grids": "^26.2.5",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "ag-grid-community": "^32.0.2",
+    "ag-grid-react": "^32.0.2",
     "axios": "^1.7.2",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
@@ -20,6 +23,7 @@
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.4.5",
     "express-session": "^1.18.0",
+    "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
     "ml-kmeans": "^6.0.0",
     "mongodb": "^6.8.0",
@@ -63,5 +67,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
   }
 }

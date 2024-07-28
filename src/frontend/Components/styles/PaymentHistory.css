@@ -3,6 +3,7 @@
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      margin-left:25%;
 }
 
 .payment-history h1 {
@@ -46,4 +47,14 @@ table th, table td {
 
 table th {
   background-color: #f8f9fa;
+}
+
+
+
+@media (max-width: 768px) {
+.payment-history {
+    padding: 15px;
+      margin-left:25%;
+
+  }
 }

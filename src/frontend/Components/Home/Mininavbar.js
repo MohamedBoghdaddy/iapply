@@ -12,13 +12,13 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Link, useNavigate } from "react-router-dom";
 import Login from "../LoginSystem/Login/Login"; // Adjusted path to Login component
 import { useLogout } from "../../../hooks/useLogout";
-import { useAuthContext } from "../../../hooks/useAuthContext";
+import useAuthHook from "../../../hooks/AuthHook"; // Default import
 const Mininavbar = () => {
   const [searchText, setSearchText] = useState("");
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const { logout } = useLogout();
-  const { user } = useAuthContext();
+  const { user } = useAuthHook();
 
   const navigate = useNavigate();
 
@@ -72,16 +72,13 @@ const Mininavbar = () => {
             <Link to="/contact" className="nav-link">
               Contact Us
             </Link>
-            {user && (
-              <>
-                <div className="nav-link">
-                </div>
+           
+                <div className="nav-link"></div>
                 <div className="nav-link" onClick={handleLogout}>
                   <FontAwesomeIcon icon={faSignOutAlt} /> Logout
                 </div>
-              </>
-            )}
-            {!user && (
+           
+         
               <div
                 className="nav-link"
                 onClick={() => {
@@ -91,7 +88,6 @@ const Mininavbar = () => {
               >
                 <FontAwesomeIcon icon={faUser} />
               </div>
-            )}
           </Nav>
         </Navbar.Collapse>
       </Container>

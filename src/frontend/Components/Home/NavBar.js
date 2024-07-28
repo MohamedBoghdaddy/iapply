@@ -6,14 +6,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { Link as ScrollLink } from "react-scroll";
 import logo from "../static/images/logo.jpeg"; // Adjust path as per your project
 import Login from "../LoginSystem/Login/Login"; // Adjust path to Login component
-import { useAuthContext } from "../../../hooks/useAuthContext";
+import { useAuthContext } from '../../../context/AuthContext'; // Adjust path if necessary
 import axios from "axios";
+import useAuthHook from "../../../hooks/AuthHook"; // Default import
 
 const NavBar = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const navigate = useNavigate();
-  const { user, dispatch } = useAuthContext(); // Get the user and dispatch from AuthContext
+  const { user, dispatch } = useAuthHook(); // Get the user and dispatch from AuthContext
 
   const handleLoginModalOpen = () => {
     setShowLoginModal(true);
@@ -118,7 +119,7 @@ const NavBar = () => {
             >
               Contact Us
             </Nav.Link>
-            {user ? (
+            {user  &&(
               <div
                 className="nav-link"
                 role="button"
@@ -132,7 +133,8 @@ const NavBar = () => {
               >
                 <FontAwesomeIcon icon={faSignOutAlt} /> Logout
               </div>
-            ) : (
+            ) }
+            {!user  &&(
               <div
                 className="nav-link"
                 role="button"

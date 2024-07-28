@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuthContext } from "./useAuthContext";
+import { useAuthContext } from '../context/AuthContext'; // Adjust path if necessary
 import axios from "axios";
 
 export const useSignup = () => {

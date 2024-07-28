@@ -1,4 +1,4 @@
-import React, { createContext, useReducer, useEffect } from "react";
+import React, { createContext, useContext, useReducer, useEffect } from "react";
 import axios from "axios";
 
 const AuthContext = createContext();
@@ -7,6 +7,7 @@ const initialState = {
   user: null,
   isAuthenticated: false,
   loading: true,
+  userId: null, // Add userId if needed
 };
 
 const authReducer = (state, action) => {
@@ -39,6 +40,11 @@ const authReducer = (state, action) => {
         isAuthenticated: false,
         loading: false,
       };
+    case "SET_USER_ID": // Add action to set userId
+      return {
+        ...state,
+        userId: action.payload,
+      };
     default:
       return state;
   }
@@ -49,45 +55,23 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const loadUser = async () => {
+      if (!state.userId) return; // Prevent call if userId is not set
+
       try {
-        const response = await axios.get("http://localhost:4000/api/user", {
-          withCredentials: true,
-        });
+        const response = await axios.get(
+          `http://localhost:4000/api/users/${state.userId}`,
+          {
+            withCredentials: true,
+          }
+        );
         dispatch({ type: "USER_LOADED", payload: response.data.user });
       } catch (error) {
         dispatch({ type: "AUTH_ERROR" });
       }
     };
+
     loadUser();
-  }, []);
-
-  const login = async (credentials) => {
-    try {
-      const response = await axios.post(
-        "http://localhost:4000/api/users/login",
-        credentials,
-        {
-          withCredentials: true,
-        }
-      );
-      dispatch({ type: "LOGIN_SUCCESS", payload: response.data.user });
-    } catch (error) {
-      console.error("Login error:", error);
-    }
-  };
-
-  const logout = async () => {
-    try {
-      await axios.post(
-        "http://localhost:4000/api/auth/users/logout",
-        {},
-        { withCredentials: true }
-      );
-      dispatch({ type: "LOGOUT_SUCCESS" });
-    } catch (error) {
-      console.error("Logout error:", error);
-    }
-  };
+  }, [state.userId]); // Add userId as a dependency
 
   return (
     <AuthContext.Provider
@@ -95,13 +79,21 @@ export const AuthProvider = ({ children }) => {
         user: state.user,
         isAuthenticated: state.isAuthenticated,
         loading: state.loading,
-        login,
-        logout,
+        setUserId: (userId) =>
+          dispatch({ type: "SET_USER_ID", payload: userId }), // Add function to set userId
       }}
     >
       {children}
     </AuthContext.Provider>
   );
+};
+
+export const useAuthContext = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error("useAuthContext must be used within an AuthProvider");
+  }
+  return context;
 };
 
 export default AuthContext;

@@ -26,7 +26,7 @@ const PaymentHistory = () => {
 
   return (
     <div className="payment-history">
-      <Sidebar />
+      {/* <Sidebar /> */}
       <h1>Payment History</h1>
       <div className="filters">
         <input

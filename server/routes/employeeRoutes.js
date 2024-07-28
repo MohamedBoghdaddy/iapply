@@ -5,7 +5,8 @@ import {
   getAllEmployees,
   getEmployee,
   updateEmployee,
-} from "../controller/employeeController.js";
+} from "../controller/EmployeeController.js"; // Added .js extension
+
 const router = express.Router();
 
 router.post("/create", createEmployee);

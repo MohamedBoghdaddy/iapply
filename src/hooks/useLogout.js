@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import axios from "axios";
-import { useAuthContext } from "./useAuthContext";
+import { useAuthContext } from '../context/AuthContext'; // Adjust path if necessary
 
 export const useLogout = () => {
   const { dispatch } = useAuthContext();

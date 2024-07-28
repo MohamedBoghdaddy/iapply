@@ -1,15 +1,20 @@
 import mongoose from "mongoose";
 
 const employeeSchema = new mongoose.Schema({
-  fname: {
+  FirstName: {
     type: String,
     required: true,
   },
-  lname: {
+  LastName: {
     type: String,
     required: true,
   },
   email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  username: {
     type: String,
     required: true,
     unique: true,

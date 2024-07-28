@@ -1,5 +1,6 @@
 import React, { createContext, useReducer, useEffect, useState } from "react";
 import axios from "axios";
+import Cookies from "js-cookie"; // Ensure js-cookie is installed
 
 export const DashboardContext = createContext();
 
@@ -36,78 +37,130 @@ const DashboardProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
   const [state, dispatch] = useReducer(dashboardReducer, initialState);
   const [loading, setLoading] = useState(true);
-
-  const fetchUserId = async () => {
-    try {
-      const response = await axios.get("http://localhost:4000/api/users/me", {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
-      dispatch({
-        type: ActionTypes.SET_USER_ID,
-        payload: response.data.userId,
-      });
-    } catch (error) {
-      console.error("Failed to fetch user ID", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [userData, setUserData] = useState(null); // Moved inside the component
 
   const fetchData = async (url, actionType) => {
+    if (!state.userId) return;
+
     try {
       const response = await axios.get(url, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        withCredentials: true,
       });
       dispatch({ type: actionType, payload: response.data });
+      setNotifications((prev) => [
+        ...prev,
+        { type: "success", message: `Fetched ${actionType} successfully.` },
+      ]);
     } catch (error) {
-      console.error(`Failed to fetch ${actionType}`, error);
+      console.error(
+        `Failed to fetch ${actionType}:`,
+        error.response?.data || error.message
+      );
+      setNotifications((prev) => [
+        ...prev,
+        { type: "error", message: `Failed to fetch ${actionType}.` },
+      ]);
     }
   };
 
   useEffect(() => {
-    fetchUserId();
-  }, []);
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:4000/api/users/getone/${state.userId}` // Use state.userId
+        );
+        setUserData(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    if (state.userId) {
+      // Only fetch if userId is defined
+      fetchUserData();
+    }
+  }, [state.userId]);
 
   useEffect(() => {
-    if (!loading && state.userId) {
-      fetchData(
-        `http://localhost:4000/api/AccountSettings/${state.userId}`,
-        ActionTypes.SET_ACCOUNT_SETTINGS
-      );
-      fetchData(
-        `http://localhost:4000/api/AppliedJobRoutes/jobs/${state.userId}`,
-        ActionTypes.SET_APPLIED_JOBS
-      );
-      fetchData(
-        `http://localhost:4000/api/users/${state.userId}`,
-        ActionTypes.SET_USER_PROFILE
-      );
-    }
-  }, [state.userId, loading]);
+    if (!state.userId) return;
 
-  const updateUserAndUploadResume = async (userId, formData, cvFile) => {
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:4000/api/users/getone/${state.userId}`,
+          { withCredentials: true }
+        );
+
+        if (response.status === 200) {
+          dispatch({
+            type: ActionTypes.SET_USER_PROFILE,
+            payload: response.data,
+          });
+        } else {
+          console.error("Failed to fetch profile", response.status);
+        }
+      } catch (error) {
+        console.error(
+          "Error fetching profile:",
+          error.response?.data || error.message
+        );
+      }
+    };
+    fetchUser();
+  }, [state.userId]);
+
+  useEffect(() => {
+    if (!state.userId) return;
+
+    const fetchInitialData = async () => {
+      try {
+        await Promise.all([
+          fetchData(
+            `http://localhost:4000/api/users/AccountSettings/${state.userId}`,
+            ActionTypes.SET_ACCOUNT_SETTINGS
+          ),
+          fetchData(
+            `http://localhost:4000/api/AppliedJobRoutes/jobs/${state.userId}`,
+            ActionTypes.SET_APPLIED_JOBS
+          ),
+          fetchData(
+            `http://localhost:4000/api/users/getone/${state.userId}`,
+            ActionTypes.SET_USER_PROFILE
+          ),
+        ]);
+      } catch (error) {
+        console.error("Error fetching initial data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchInitialData();
+  }, [state.userId]);
+
+  const updateProfile = async (formData, cvFile) => {
     const formDataToSend = new FormData();
     Object.keys(formData).forEach((key) => {
       formDataToSend.append(key, formData[key]);
     });
-    if (cvFile) {
-      formDataToSend.append("resume", cvFile);
-    }
+    // if (cvFile) {
+    //   formDataToSend.append("resume", cvFile);
+    // }
 
     try {
       const response = await axios.put(
-        `http://localhost:4000/api/users/${userId}/updateUserAndUploadResume`,
+        `http://localhost:4000/api/users/${state.userId}`,
         formDataToSend,
         {
+          withCredentials: true,
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "multipart/form-data",
           },
         }
       );
       return response.data;
     } catch (error) {
-      console.error("Failed to update user and upload resume", error);
+      console.error("Failed to update user ", error);
       throw error;
     }
   };
@@ -128,11 +181,11 @@ const DashboardProvider = ({ children }) => {
         updateAccountSettings: async (data) => {
           try {
             const response = await axios.put(
-              `http://localhost:4000/api/AccountSettings/${state.userId}`,
+              `http://localhost:4000/api/users/AccountSettings/${state.userId}`,
               data,
               {
+                withCredentials: true,
                 headers: {
-                  Authorization: `Bearer ${localStorage.getItem("token")}`,
                   "Content-Type": "application/json",
                 },
               }
@@ -148,7 +201,7 @@ const DashboardProvider = ({ children }) => {
             `http://localhost:4000/api/AppliedJobRoutes/jobs/${state.userId}`,
             ActionTypes.SET_APPLIED_JOBS
           ),
-        fetchUserProfile: () =>
+        fetchUser: () =>
           fetchData(
             `http://localhost:4000/api/users/${state.userId}`,
             ActionTypes.SET_USER_PROFILE
@@ -156,11 +209,11 @@ const DashboardProvider = ({ children }) => {
         updateUserProfile: async (data) => {
           try {
             const response = await axios.put(
-              `http://localhost:4000/api/users/${state.userId}/updateUserAndUploadResume`,
+              `http://localhost:4000/api/users/${state.userId}`,
               data,
               {
+                withCredentials: true,
                 headers: {
-                  Authorization: `Bearer ${localStorage.getItem("token")}`,
                   "Content-Type": "application/json",
                 },
               }
@@ -171,7 +224,7 @@ const DashboardProvider = ({ children }) => {
             throw error;
           }
         },
-        updateUserAndUploadResume,
+        updateProfile,
       }}
     >
       {children}
@@ -179,4 +232,4 @@ const DashboardProvider = ({ children }) => {
   );
 };
 
-export { DashboardProvider };
+export default DashboardProvider;

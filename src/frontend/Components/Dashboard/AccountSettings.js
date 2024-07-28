@@ -1,9 +1,9 @@
-// Example usage in AccountSettings.js
+// src/components/Dashboard/AccountSettings.js
 import React, { useState, useEffect } from "react";
-import useDashboard from "../../../hooks/useDashboard.js";
-import Notification from "./Notification.js";
-import "../styles/AccountSetting.css";
+import { useDashboard } from "../../../hooks/useDashboard"; // Correct path to the new hook
+import Notification from "./Notification";
 import Sidebar from "../Dashboard/Sidebar";
+import "../styles/AccountSetting.css";
 
 const AccountSettings = () => {
   const { accountSettings, updateAccountSettings } = useDashboard();
@@ -29,47 +29,45 @@ const AccountSettings = () => {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (formData.password !== formData.confirmPassword) {
-    setNotification({ type: "error", message: "Passwords do not match" });
-    return;
-  }
-  if (formData.password.length < 8) {
-    // Example of additional validation
-    setNotification({
-      type: "error",
-      message: "Password must be at least 8 characters long",
-    });
-    return;
-  }
-
-  try {
-    const response = await updateAccountSettings(formData);
-    if (response && response.status === 200) {
-      setNotification({
-        type: "success",
-        message: "Account settings updated successfully!",
-      });
-    } else {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (formData.password !== formData.confirmPassword) {
+      setNotification({ type: "error", message: "Passwords do not match" });
+      return;
+    }
+    if (formData.password.length < 8) {
       setNotification({
         type: "error",
-        message: response?.data?.message || "Failed to update account settings",
+        message: "Password must be at least 8 characters long",
+      });
+      return;
+    }
+
+    try {
+      const response = await updateAccountSettings(formData);
+      if (response && response.status === 200) {
+        setNotification({
+          type: "success",
+          message: "Account settings updated successfully!",
+        });
+      } else {
+        setNotification({
+          type: "error",
+          message:
+            response?.data?.message || "Failed to update account settings",
+        });
+      }
+    } catch (err) {
+      setNotification({
+        type: "error",
+        message: "An error occurred while updating settings",
       });
     }
-  } catch (err) {
-    setNotification({
-      type: "error",
-      message: "An error occurred while updating settings",
-    });
-  }
-};
-
+  };
 
   return (
     <div className="account-settings">
-      <Sidebar />
-
+      {/* <Sidebar /> */}
       <h1>Account Settings</h1>
       {notification && (
         <Notification type={notification.type} message={notification.message} />
@@ -82,6 +80,16 @@ const handleSubmit = async (e) => {
             id="email"
             name="email"
             value={formData.email}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="Username">Username:</label>
+          <input
+            type="text"
+            id="Username"
+            name="Username"
+            value={formData.Username}
             onChange={handleInputChange}
           />
         </div>

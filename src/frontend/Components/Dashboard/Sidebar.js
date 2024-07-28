@@ -1,106 +1,58 @@
-import React, { useState } from "react";
-import { NavLink as NavLinkRRD, Link } from "react-router-dom";
-import PropTypes from "prop-types";
-import { Button, Container, Row, Col } from "reactstrap";
-import { useAuthContext } from "../../../hooks/useAuthContext"; // Ensure this import path is correct
+import React from "react";
+import { Link } from "react-router-dom";
+import { FaUser, FaHistory, FaCog, FaBell } from "react-icons/fa";
 import "../styles/Sidebar.css";
+import useAuthHook from "../../../hooks/AuthHook"; // Default import
+// import { useAuthContext } from "./../../context/AuthContext";
 
-const Sidebar = (props) => {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-
-  const toggleSidebar = () => {
-    setSidebarOpen((prevState) => !prevState);
-  };
-
-  const createLinks = (routes = []) => {
-    return routes.map((prop, key) => (
-      <div className="nav-item" key={key}>
-        <NavLinkRRD to={prop.layout + prop.path} className="nav-link">
-          <i className={prop.icon} />
-          {prop.name}
-        </NavLinkRRD>
-      </div>
-    ));
-  };
-
-  const { routes = [], logo } = props;
-  let navbarBrandProps;
-  if (logo && logo.innerLink) {
-    navbarBrandProps = {
-      to: logo.innerLink,
-      tag: Link,
-    };
-  } else if (logo && logo.outterLink) {
-    navbarBrandProps = {
-      href: logo.outterLink,
-      target: "_blank",
-    };
-  }
-
-  const { user } = useAuthContext();
+const Sidebar = () => {
+  const { user, isAuthenticated } = useAuthHook();
 
   return (
-    <div className={`sidebar ${sidebarOpen ? "open" : "closed"}`}>
-      <Container fluid>
-        <button
-          className="sidebar-toggler"
-          type="button"
-          onClick={toggleSidebar}
-        >
-          {sidebarOpen ? "Close" : "Open"}
-        </button>
-        {logo ? (
-          <div className="sidebar-brand" {...navbarBrandProps}>
-            {/* <img
-              alt={logo.imgAlt}
-              className="navbar-brand-img"
-              src={logo.imgSrc}
-            /> */}
-          </div>
-        ) : null}
-        <div className="nav">
-          {createLinks(routes)}
-          <div className="nav-item">
-            <NavLinkRRD to="/AccountSettings" className="nav-link">
-              <i className="ni ni-settings-gear-65" />
-              Account Settings
-            </NavLinkRRD>
-          </div>
-          <div className="nav-item">
-            <NavLinkRRD to="/profile" className="nav-link">
-              <i className="ni ni-single-02" />
-              My Profile
-            </NavLinkRRD>
-          </div>
-          <div className="nav-item">
-            <NavLinkRRD to="/paymenthistory" className="nav-link">
-              <i className="ni ni-credit-card" />
-              Payment History
-            </NavLinkRRD>
-          </div>
-          <div className="nav-item">
-            <NavLinkRRD to="/jobhistory" className="nav-link">
-              <i className="ni ni-briefcase-24" />
-              Job History
-            </NavLinkRRD>
-          </div>
-        </div>
-      </Container>
+    <div className="sidebar">
+      <div className="sidebar-header">
+        <h2>{isAuthenticated ? `Welcome, ${user?.name}` : "Guest"}</h2>
+        {/* Fallback to "Guest" if user is null */}
+      </div>
+      <ul className="sidebar-menu">
+        <li>
+          <Link to="/dashboard">
+            <FaUser /> Dashboard
+          </Link>
+        </li>
+        <li>
+          <Link to="/profile">
+            <FaUser /> Profile
+          </Link>
+        </li>
+        <li>
+          <Link to="/JobHistory">
+            <FaHistory /> Job History
+          </Link>
+        </li>
+        <li>
+          <Link to="/ApplyToJobs">
+            <FaHistory /> Apply to Jobs
+          </Link>
+        </li>
+        <li>
+          <Link to="/PaymentHistory">
+            <FaHistory /> Payment History
+          </Link>
+        </li>
+        <li>
+          <Link to="/AccountSettings">
+            <FaCog /> Account Settings
+          </Link>
+        </li>
+        <li>
+          <Link to="/notifications">
+            <FaBell /> Notifications
+          </Link>
+        </li>
+      </ul>
     </div>
   );
-};
-
-Sidebar.propTypes = {
-  bgColor: PropTypes.string,
-  routes: PropTypes.arrayOf(
-    PropTypes.shape({
-      layout: PropTypes.string.isRequired,
-      path: PropTypes.string.isRequired,
-      icon: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-    })
-  ).isRequired,
-  logo: PropTypes.object,
 };
 
 export default Sidebar;

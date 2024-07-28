@@ -34,12 +34,12 @@ const App = () => {
           }
         />
         <Route
-          path="/dashboard"
+          path="/Dashboard"
           element={
             <>
               <Mininavbar />
               <Dashboard />
-              <Sidebar/>
+              <Sidebar />
             </>
           }
         />
@@ -49,6 +49,7 @@ const App = () => {
             <>
               <Mininavbar />
               <Profile />
+              <Sidebar />
             </>
           }
         />
@@ -59,6 +60,7 @@ const App = () => {
               <Mininavbar />
               <JobHistory />
               <ApplyToJobs />
+              <Sidebar />
             </>
           }
         />
@@ -68,6 +70,7 @@ const App = () => {
             <>
               <Mininavbar />
               <ApplyToJobs />
+              <Sidebar />
             </>
           }
         />
@@ -77,6 +80,7 @@ const App = () => {
             <>
               <Mininavbar />
               <PaymentHistory />
+              <Sidebar />
             </>
           }
         />
@@ -86,6 +90,7 @@ const App = () => {
             <>
               <Mininavbar />
               <AccountSettings />
+              <Sidebar />
             </>
           }
         />

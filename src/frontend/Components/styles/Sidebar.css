@@ -1,26 +1,103 @@
 .sidebar {
-  background-color: #f1f1f1;
-  padding: 20px;
-  width: 200px;
-  height: 100%;
-  position: fixed;
-  top: 0;
+  position: sticky;
+  top: 0px;
+  bottom: 0;
+  height: 100vh;
   left: 0;
-  transition: all 0.3s ease-in-out;
+  width: 20px;
+  background-color: #2f4050;
+  color: #fff;
+  overflow: hidden;
+  transition: 1s;
 }
 
-.sidebar a {
-  display: block;
-  color: #000;
-  padding: 10px 16px;
+.sidebar:hover {
+  width: 230px;
+  transition: 1s;
+  z-index: 100000000;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  background-color: #1a1a1a;
+  font-size: 20px;
+}
+
+
+.sidebar ul {
+  list-style: none;
+  padding: 20px 0;
+  margin: 0;
+}
+
+.sidebar ul li {
+  padding: 10px 20px;
+}
+
+.sidebar ul li a {
+  color: #adb5bd;
   text-decoration: none;
-  transition: all 0.3s ease-in-out;
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.sidebar a:hover {
-  background-color: #ddd;
+.sidebar ul li a:hover {
+  background-color: #495057;
+  color: #fff;
 }
 
-.sidebar a.active {
-  background-color: #ccc;
+.sidebar ul li a .icon {
+  margin-right: 10px;
+}
+
+.sidebar .logout {
+  text-align: center;
+  padding: 10px 20px;
+  border-radius: 4px;
+  background-color: #dc3545;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar .logout:hover {
+  background-color: #c82333;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 200px;
+  }
+
+  .sidebar ul li a {
+    padding: 8px 15px;
+  }
+
+  .sidebar .logout {
+    padding: 8px 15px;
+  }
+}
+
+/* Add smooth transitions */
+.account-settings,
+.job-applications,
+.job-history,
+.payment-history,
+.profile {
+  transition: all 0.3s ease;
+}
+
+/* General reset and font styles */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
 }
