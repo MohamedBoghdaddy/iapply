@@ -18,7 +18,7 @@ import Footer from "./frontend/Components/Home/Footer";
 import Contact from "./frontend/Components/contact/contact";
 import NavBar from "./frontend/Components/Home/NavBar";
 import Mininavbar from "./frontend/Components/Home/Mininavbar";
-
+import EmployeeList from "./frontend/Components/Dashboard/employeelist";
 const App = () => {
   return (
     <BrowserRouter>
@@ -60,6 +60,16 @@ const App = () => {
               <Mininavbar />
               <JobHistory />
               <ApplyToJobs />
+              <Sidebar />
+            </>
+          }
+        />
+        <Route
+          path="/EmployeeList"
+          element={
+            <>
+              <Mininavbar />
+              <EmployeeList />
               <Sidebar />
             </>
           }
