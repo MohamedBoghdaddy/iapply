@@ -1,10 +1,11 @@
-// Login.js
 import React from "react";
 import "../../styles/login.css"; // Adjust the path as needed
 import { Link } from "react-router-dom";
-import LoginHook from "../../../../hooks/LoginHook";
+import { useLogin } from "../../../../hooks/LoginHook";
+import { login } from "../../../../api"; // Adjust the path as needed
 
-const Login = () => {
+
+const Login = ({ onLoginSuccess }) => {
   const {
     email,
     setEmail,
@@ -12,11 +13,11 @@ const Login = () => {
     setPassword,
     showPassword,
     setShowPassword,
-    error,
+    errorMessage,
+    successMessage,
     isLoading,
     handleLogin,
-  } = LoginHook();
-
+  } = useLogin(onLoginSuccess);
   return (
     <div className="main-container">
       <div className="login-container">
@@ -31,7 +32,6 @@ const Login = () => {
                   id="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  disabled={isLoading} // Disable input while loading
                   required
                 />
               </div>
@@ -44,23 +44,23 @@ const Login = () => {
                   id="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  disabled={isLoading} // Disable input while loading
                   required
                 />
                 <button
                   type="button"
                   className="show-password"
                   onClick={() => setShowPassword(!showPassword)}
-                  disabled={isLoading} // Disable button while loading
                 >
-                  <i className="fas fa-eye"></i>
+                  <i
+                    className={showPassword ? "fas fa-eye-slash" : "fas fa-eye"}
+                  ></i>{" "}
                 </button>
               </div>
             </div>
-            {error && <div className="error">{error}</div>}
+            {errorMessage && <div className="error">{errorMessage}</div>}
+            {successMessage && <div className="success">{successMessage}</div>}
             <button className="left_btn" type="submit" disabled={isLoading}>
-              {isLoading ? "Loading..." : "Login"}{" "}
-              {/* Show loading text while loading */}
+              {isLoading ? "Logging in..." : "Login"}
             </button>
           </form>
         </div>

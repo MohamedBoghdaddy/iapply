@@ -1,29 +1,23 @@
+// JobHistory.js
 import React, { useState } from "react";
 import "../styles/JobHistory.css";
-import Sidebar from "../Dashboard/Sidebar";
-
-
-
-
-const handleSearch = () => {
-  // Implement search functionality here
-};
 
 const JobHistory = () => {
+  const [jobHistory, setJobHistory] = useState([]);
 
-    const [jobHistory, setJobHistory] = useState([]);
+  const handleSearch = () => {
+    // Implement search functionality here
+  };
 
   return (
     <div className="job-history">
-      {/* <Sidebar /> */}
-
       <h1>Job History</h1>
       <div className="filters">
         <input type="text" placeholder="Country" />
         <input type="text" placeholder="Job Title" />
         <input type="date" placeholder="From Date" />
         <input type="date" placeholder="To Date" />
-        <button>Search</button>
+        <button onClick={handleSearch}>Search</button>
         <button>Reset Filter</button>
       </div>
       <table>
@@ -52,8 +46,9 @@ const JobHistory = () => {
             <td>HSE Manager</td>
             <td>France</td>
             <td>
-              <a href="#view">VIEW</a>
-            </td>
+              <a href="#view">VIEW/</a>
+
+              </td>
           </tr>
         </tbody>
       </table>

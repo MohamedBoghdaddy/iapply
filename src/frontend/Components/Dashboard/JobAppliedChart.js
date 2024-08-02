@@ -1,4 +1,3 @@
-// src/components/JobAppliedChart.js
 import React from "react";
 import { Bar } from "react-chartjs-2";
 import {
@@ -23,29 +22,24 @@ ChartJS.register(
 );
 
 const JobAppliedChart = ({ jobData }) => {
- const data = {
-   labels: jobData.length ? jobData.map((job) => job.month) : ["No Data"],
-   datasets: [
-     {
-       label: "Jobs Applied",
-       data: jobData.length ? jobData.map((job) => job.count) : [0],
-       backgroundColor: "rgba(75, 192, 192, 0.2)",
-       borderColor: "rgba(75, 192, 192, 1)",
-       borderWidth: 1,
-     },
-   ],
- };
+  const data = {
+    labels: jobData.length ? jobData.map((job) => job.month) : ["No Data"],
+    datasets: [
+      {
+        label: "Jobs Applied",
+        data: jobData.length ? jobData.map((job) => job.count) : [0],
+        backgroundColor: "rgba(75, 192, 192, 0.2)",
+        borderColor: "rgba(75, 192, 192, 1)",
+        borderWidth: 1,
+      },
+    ],
+  };
 
   const options = {
     responsive: true,
     plugins: {
-      legend: {
-        position: "top",
-      },
-      title: {
-        display: true,
-        text: "Jobs Applied Per Month",
-      },
+      legend: { position: "top" },
+      title: { display: true, text: "Jobs Applied Per Month" },
     },
   };
 

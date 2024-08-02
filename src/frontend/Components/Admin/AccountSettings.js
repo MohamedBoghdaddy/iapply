@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useContext } from "react";
-import { DashboardContext } from "../../../context/DashboardContext";
+import { AdminDashboardContext } from "../../../context/AdminDashboardContext";
 import Notification from "./Notification";
 import "../styles/AccountSetting.css";
 
 const AccountSettings = () => {
-  const { accountSettings, updateAccountSettings } =
-    useContext(DashboardContext); // Use useContext here
+  const { accountSettings, updateAccountSettings } = useContext(
+    AdminDashboardContext
+  );
   const [formData, setFormData] = useState({
     email: "",
     password: "",

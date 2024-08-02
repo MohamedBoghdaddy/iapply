@@ -1,7 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
-import https from "https";
-import fs from "fs";
+import path from "path";
 import multer from "multer";
 import cors from "cors";
 import Razorpay from "razorpay";
@@ -14,10 +13,11 @@ import userroutes from "./routes/userroutes.js";
 import jobRoutes from "./routes/jobRoutes.js";
 import accountSettingsRoutes from "./routes/accountSettingRoutes.js";
 import analyticRoutes from "./routes/analyticRoutes.js";
+import employeeRoutes from "./routes/employeeRoutes.js"; // Import employee routes
 import User from "./models/UserModel.js";
-import { auth, authorizeRoles } from "./Middleware/authMiddleware.js";
 import jwt from "jsonwebtoken";
-import employeeRoutes from "./routes/employeeRoutes.js"
+import morgan from "morgan";
+
 dotenv.config();
 
 const app = express();
@@ -25,42 +25,6 @@ const upload = multer({ dest: "uploads/" });
 const MongoDBStore = connectMongoDBSession(session);
 const JWT_SECRET = process.env.JWT_SECRET;
 const SESSION_SECRET = process.env.SESSION_SECRET;
-
-const store = new MongoDBStore({
-  uri: process.env.MONGO_URL,
-  collection: "sessions",
-});
-
-// Middleware
-app.use(express.json());
-app.use(cookieParser(SESSION_SECRET));
-
-const corsOptions = {
-  origin: process.env.CORS_ORIGIN || "http://localhost:3000",
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  credentials: true,
-};
-app.use(cors(corsOptions));
-
-const options = {
-  key: fs.readFileSync("../localhost+1-key.pem"),
-  cert: fs.readFileSync("../localhost+1.pem"),
-};
-
-// Configure session middleware
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    store: store,
-    cookie: {
-      secure: process.env.NODE_ENV === "production", // Set to true in production
-      httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
-    },
-  })
-);
 
 // Environment variables
 const PORT = process.env.PORT || 4000;
@@ -72,11 +36,51 @@ if (!MONGO_URL) {
   process.exit(1);
 }
 
+const store = new MongoDBStore({
+  uri: MONGO_URL,
+  collection: "sessions",
+});
+
+store.on("error", (error) => {
+  console.error("MongoDB session store error:", error);
+});
+
+// Middleware
+app.use(express.json());
+app.use(cookieParser(SESSION_SECRET));
+
+app.use(
+  cors({
+    origin: "http://localhost:3000", // Adjust to your frontend's URL
+    credentials: true,
+  })
+);
+
+// Configure session middleware
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    store: store,
+    cookie: {
+      secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+    },
+  })
+);
+
 // Connect to MongoDB
 mongoose
-  .connect(MONGO_URL)
+  .connect(MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    serverSelectionTimeoutMS: 5000,
+  })
   .then(() => {
-    https.createServer(options, app).listen(PORT, () => {
+    console.log("MongoDB connected successfully");
+    app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
     });
   })
@@ -90,6 +94,20 @@ const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_API_KEY,
   key_secret: process.env.RAZORPAY_API_SECRET,
 });
+
+const createToken = (_id, res) => {
+  const token = jwt.sign({ _id }, JWT_SECRET, {
+    expiresIn: "3d",
+  });
+ res.cookie("token", token, {
+   httpOnly: true, // Helps mitigate XSS attacks by preventing client-side scripts from accessing the data
+   secure: false, // Ensure this is false for development (HTTP)
+   sameSite: "strict", // "lax" or "strict" can be used for CSRF protection, adjust based on your needs
+   maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+ });
+
+  return token;
+};
 
 // Middleware to verify JWT tokens for protected routes
 const verifyToken = (req, res, next) => {
@@ -107,29 +125,23 @@ const verifyToken = (req, res, next) => {
   }
 };
 
-app.post("api/users/login", (req, res) => {
-  // Authenticate user and create a JWT token
-  const token = createToken("userId", res); // Example userId
-  res.json({ message: "Logged in", token });
-});
 
-const createToken = (_id, res) => {
-  const token = jwt.sign({ _id }, JWT_SECRET, {
-    expiresIn: "3d",
-  });
-  res.cookie("token", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production", // Set to true in production
-    maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
-  });
-  return token;
-};
 
 // Routes
 app.use("/api/users", userroutes);
 app.use("/api/jobs", jobRoutes);
 app.use("/api/analytics", analyticRoutes);
 app.use("/api/AccountSettings", accountSettingsRoutes);
+app.use("/api", employeeRoutes); // Use employee routes
+
+app.get("/api/users/me", verifyToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    res.json({ user });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching user details" });
+  }
+});
 
 // Protecting routes
 app.use("/api/protected-route", verifyToken, (req, res) => {

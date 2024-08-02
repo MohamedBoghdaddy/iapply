@@ -1,30 +1,21 @@
 import React, { useState } from "react";
-import { Navbar, Nav, Container, Form, Modal } from "react-bootstrap";
+import { Navbar, Nav, Container, Modal } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faMagnifyingGlass,
-  faUser,
-  faSignOutAlt,
-} from "@fortawesome/free-solid-svg-icons";
+import { faUser, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import "../styles/navbar.css";
 import logo from "../static/images/logo.jpeg";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Link, useNavigate } from "react-router-dom";
-import Login from "../LoginSystem/Login/Login"; // Adjusted path to Login component
+import Login from "../LoginSystem/Login/Login"; // Adjust path to Login component
 import { useLogout } from "../../../hooks/useLogout";
-import useAuthHook from "../../../hooks/AuthHook"; // Default import
+import { useAuthContext } from "../../../context/AuthContext"; // Adjust path if necessary
+
 const Mininavbar = () => {
-  const [searchText, setSearchText] = useState("");
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const { logout } = useLogout();
-  const { user } = useAuthHook();
-
+  const { user, isAuthenticated } = useAuthContext();
   const navigate = useNavigate();
-
-  const handleSearch = () => {
-    console.log(`Searching for: ${searchText}`);
-  };
 
   const handleLoginModalOpen = () => {
     setShowLoginModal(true);
@@ -38,8 +29,7 @@ const Mininavbar = () => {
 
   const handleLogout = async () => {
     logout();
-    // Redirect to login
-    navigate("/login");
+    navigate("/");
   };
 
   return (
@@ -49,7 +39,7 @@ const Mininavbar = () => {
           <img
             src={logo}
             alt="Company Logo"
-            style={{ width: "60px", height: "auto" }}
+            style={{ width: "60px", height: "57px", top: 0 }}
           />
         </Navbar.Brand>
         <Navbar.Toggle
@@ -66,28 +56,53 @@ const Mininavbar = () => {
             <Link to="/" className="nav-link">
               HOME
             </Link>
-            <Link to="/dashboard" className="nav-link">
-              Dashboard
-            </Link>
+            {user && (
+              <Nav.Link
+                as={Link}
+                to="/dashboard"
+                className="nav-link"
+                onClick={handleNavCollapse}
+              >
+                Dashboard
+              </Nav.Link>
+            )}
             <Link to="/contact" className="nav-link">
               Contact Us
             </Link>
-           
-                <div className="nav-link"></div>
-                <div className="nav-link" onClick={handleLogout}>
-                  <FontAwesomeIcon icon={faSignOutAlt} /> Logout
-                </div>
-           
-         
+            {user && (
               <div
                 className="nav-link"
+                role="button"
+                tabIndex="0"
+                onClick={handleLogout}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    handleLogout();
+                  }
+                }}
+              >
+                <FontAwesomeIcon icon={faSignOutAlt} /> Logout
+              </div>
+            )}
+            {!user && (
+              <div
+                className="nav-link"
+                role="button"
+                tabIndex="0"
                 onClick={() => {
                   handleLoginModalOpen();
                   handleNavCollapse();
                 }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    handleLoginModalOpen();
+                    handleNavCollapse();
+                  }
+                }}
               >
                 <FontAwesomeIcon icon={faUser} />
               </div>
+            )}
           </Nav>
         </Navbar.Collapse>
       </Container>
@@ -95,7 +110,7 @@ const Mininavbar = () => {
       <Modal show={showLoginModal} onHide={handleLoginModalClose} centered>
         <Modal.Header closeButton></Modal.Header>
         <Modal.Body>
-          <Login /> {/* Render your existing login component here */}
+          <Login onLoginSuccess={handleLoginModalClose} /> {/* Pass callback */}
         </Modal.Body>
       </Modal>
     </Navbar>

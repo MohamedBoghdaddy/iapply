@@ -1,4 +1,3 @@
-// src/cookieUtils.js
 
 /**
  * Set a cookie

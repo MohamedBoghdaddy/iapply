@@ -1,25 +1,28 @@
-// src/api.js
 import axios from "axios";
-import Cookies from "js-cookie";
+
+const API = axios.create({
+  baseURL: "http://localhost:4000", // Update with your server's URL
+  withCredentials: true,
+});
+
+// Authentication functions
 
 export const login = async (email, password) => {
-  try {
-    const response = await axios.post("http://localhost:4000/api/users/login", {
-      email: email.trim(),
-      password: password.trim(),
-    });
-    const { token, user } = response.data;
-    Cookies.set("token", token, { expires: 7 }); // Store token in cookies
-    localStorage.setItem("user", JSON.stringify(user)); // Optional: store user info
-    return user;
-  } catch (error) {
-    console.error("Login error:", error);
-    throw error;
-  }
+  const response = await API.post("/login", { email, password });
+  return response.data;
 };
 
-// Set default authorization header for Qaxios
-const token = Cookies.get("token");
-if (token) {
-  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-}
+export const signup = async (userData) => {
+  const response = await API.post("/signup", userData);
+  return response.data;
+};
+
+export const logout = async () => {
+  const response = await API.post("/logout");
+  return response.data;
+};
+
+export const getUser = async () => {
+  const response = await API.get("/api/users/getone/:userId");
+  return response.data;
+};

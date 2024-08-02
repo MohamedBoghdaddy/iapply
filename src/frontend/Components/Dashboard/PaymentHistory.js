@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../styles/PaymentHistory.css";
-import Sidebar from "../Dashboard/Sidebar";
 
 const PaymentHistory = () => {
   const [payments, setPayments] = useState([]);
@@ -26,7 +25,6 @@ const PaymentHistory = () => {
 
   return (
     <div className="payment-history">
-      {/* <Sidebar /> */}
       <h1>Payment History</h1>
       <div className="filters">
         <input

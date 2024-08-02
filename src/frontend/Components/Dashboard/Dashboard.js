@@ -1,18 +1,56 @@
-import React from "react";
-import Notification from "./Notification.js";
+import React, { useEffect, useState } from "react";
+import { Bar } from "react-chartjs-2";
+import axios from "axios";
+import Notification from "./Notification";
+import Sidebar from "../Dashboard/Sidebar";
 import "../styles/Dashboard.css";
-import Sidebar from "../Dashboard/Sidebar.js";
-const Dashboard = () => {
-  return (
-    <div>
-      {/* <Sidebar /> */}
 
+const Dashboard = () => {
+  const [chartData, setChartData] = useState({
+    labels: [],
+    datasets: [],
+  });
+  const [notifications, setNotifications] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("/api/chart-data", {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        });
+        const data = response.data;
+
+        // Ensure that data.labels and data.values are defined and arrays
+        const labels = data.labels || [];
+        const values = data.values || [];
+        
+        setChartData({
+          labels: data.labels,
+          datasets: [
+            {
+              label: "User Data",
+              data: data.values,
+              backgroundColor: "rgba(75,192,192,1)",
+            },
+          ],
+        });
+      } catch (error) {
+        console.error("Error fetching chart data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  return (
+    <div className="dashboard">
+      <Sidebar />
       <div className="main">
         <div className="main-top">
           <h1>Dashboard</h1>
           <span className="material-symbols-rounded">account_circle</span>
         </div>
-        <div className="users">
+        {/* <div className="users">
           <div className="card">
             <span className="material-symbols-rounded">trending_up</span>
             <span className="nav-item">Income</span>
@@ -69,7 +107,9 @@ const Dashboard = () => {
             <h4>+3 More</h4>
             <button>More Details</button>
           </div>
-        </div>
+        </div> */}
+        <h2>User Data</h2>
+        <Bar data={chartData} />
       </div>
     </div>
   );

@@ -4,8 +4,13 @@ from job_application import JobApplication
 from mail_service import MailService
 from werkzeug.utils import secure_filename
 import os
+from flask_cors import CORS
+import logging
+logging.basicConfig(level=logging.INFO)
 
 app = Flask(__name__)
+CORS(app)
+
 UPLOAD_FOLDER = 'uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 

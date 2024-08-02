@@ -1,7 +1,7 @@
-body {
+/* body {
     font-family: Arial, sans-serif;
-    background-color: #F5F5F5; /* Soft gray */
-    color: #333333; /* Charcoal */
+    background-color: #F5F5F5; 
+    color: #333333; 
 }
 
 header {
@@ -14,15 +14,15 @@ header img {
 }
 
 header h1 {
-    color: #E74C3C; /* Coral */
+    color: #E74C3C; 
 }
 
 header p {
-    color: #2C3E50; /* Navy blue */
+    color: #2C3E50; 
 }
 
 section {
-    background-color: #FFFFFF; /* White */
+    background-color: #FFFFFF; 
     padding: 20px;
     margin: 20px;
     border-radius: 10px;
@@ -30,11 +30,11 @@ section {
 }
 
 section h2 {
-    color: #F1C40F; /* Soft gold */
+    color: #F1C40F; 
 }
 
 section p {
-    color: #F5B7B1; /* Blush pink */
+    color: #F5B7B1; 
 }
 
 form input, form textarea {
@@ -47,10 +47,10 @@ form input, form textarea {
 }
 
 form button {
-    background-color: #E74C3C; /* Coral */
+    background-color: #E74C3C; 
     color: white;
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-}
+} */

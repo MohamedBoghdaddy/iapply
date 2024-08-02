@@ -6,15 +6,19 @@ import { Link, useNavigate } from "react-router-dom";
 import { Link as ScrollLink } from "react-scroll";
 import logo from "../static/images/logo.jpeg"; // Adjust path as per your project
 import Login from "../LoginSystem/Login/Login"; // Adjust path to Login component
-import { useAuthContext } from '../../../context/AuthContext'; // Adjust path if necessary
+import { useAuthContext } from "../../../context/AuthContext"; // Adjust path if necessary
 import axios from "axios";
-import useAuthHook from "../../../hooks/AuthHook"; // Default import
+import { useLogout } from "../../../hooks/useLogout";
+
+import "../styles/navbar.css";
+// import "bootstrap/dist/css/bootstrap.min.css";
 
 const NavBar = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const navigate = useNavigate();
-  const { user, dispatch } = useAuthHook(); // Get the user and dispatch from AuthContext
+  const { user, dispatch } = useAuthContext(); // Get the user and dispatch from AuthContext
+  const { logout } = useLogout();
 
   const handleLoginModalOpen = () => {
     setShowLoginModal(true);
@@ -27,13 +31,8 @@ const NavBar = () => {
   const handleNavCollapse = () => setExpanded(!expanded);
 
   const handleLogout = async () => {
-    try {
-      await axios.post("/api/auth/logout", {}, { withCredentials: true });
-      dispatch({ type: "LOGOUT_SUCCESS" });
-      navigate("/login");
-    } catch (error) {
-      console.error("Logout error:", error);
-    }
+    logout();
+    navigate("/");
   };
 
   return (
@@ -43,7 +42,7 @@ const NavBar = () => {
           <img
             src={logo}
             alt="Company Logo"
-            style={{ width: "80px", height: "auto", top: 0 }}
+            style={{ width: "80px", height: "57px", top: 0 }}
           />
         </Navbar.Brand>
         <Navbar.Toggle
@@ -100,6 +99,13 @@ const NavBar = () => {
               onClick={handleNavCollapse}
             >
               PRICING
+            </ScrollLink> 
+                <ScrollLink
+              to="/contact"
+              className="nav-link"
+              onClick={handleNavCollapse}
+            >
+              Contact Us
             </ScrollLink>
             {user && (
               <Nav.Link
@@ -111,15 +117,8 @@ const NavBar = () => {
                 Dashboard
               </Nav.Link>
             )}
-            <Nav.Link
-              as={Link}
-              to="/contact"
-              className="nav-link"
-              onClick={handleNavCollapse}
-            >
-              Contact Us
-            </Nav.Link>
-            {user  &&(
+       
+            {user && (
               <div
                 className="nav-link"
                 role="button"
@@ -133,8 +132,8 @@ const NavBar = () => {
               >
                 <FontAwesomeIcon icon={faSignOutAlt} /> Logout
               </div>
-            ) }
-            {!user  &&(
+            )}
+            {!user && (
               <div
                 className="nav-link"
                 role="button"
@@ -160,7 +159,7 @@ const NavBar = () => {
       <Modal show={showLoginModal} onHide={handleLoginModalClose} centered>
         <Modal.Header closeButton></Modal.Header>
         <Modal.Body>
-          <Login /> {/* Render your existing login component here */}
+          <Login onLoginSuccess={handleLoginModalClose} /> {/* Pass callback */}
         </Modal.Body>
       </Modal>
     </Navbar>

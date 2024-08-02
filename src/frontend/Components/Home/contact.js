@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import emailjs from "@emailjs/browser";
 import "../styles/contact.css";
-
+import "../styles/Home.css";
 const validateEmail = (email) => email.includes("@");
 
 const Contact = () => {
@@ -33,7 +33,7 @@ const Contact = () => {
   };
 
   return (
-    <div className="contact-container">
+    <section id="contact" className="contact-container">
       <div className="frame-container">
         <h1>Contact Us</h1>
         <form ref={form} onSubmit={sendEmail}>
@@ -72,7 +72,7 @@ const Contact = () => {
           <input type="submit" value="Send" />
         </form>
       </div>
-    </div>
+    </section>
   );
 };
 

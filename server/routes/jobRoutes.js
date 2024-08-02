@@ -1,5 +1,5 @@
 import express from "express";
-import { AppliedJob } from "../models/AppliedJobModel.js"; // Adjust based on your project structure
+import AppliedJob from "../models/AppliedJobModel.js"; // Adjust based on your project structure
 
 const router = express.Router();
 

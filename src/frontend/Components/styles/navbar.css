@@ -1,41 +1,30 @@
-/* Merged CSS with adjusted colors to maintain original scheme */
-
 .navbar {
+  display: flex; /* Flexbox for navbar links */
+  flex-grow: 1; /* Allow the navbar to grow */
   position: fixed; /* Fix the navbar at the top */
   top: 0; /* Position at the top of the viewport */
   width: 100%; /* Ensure it spans the full width */
   height: 70px; /* Adjust the height to a smaller size */
   background-color: #323c43; /* Dark background */
   color: #060504; /* Light text color */
-  padding: 0 20px; /* Adjust padding */
   z-index: 1000; /* Ensure it stays above other content */
 }
 
 .navbar .navbar-nav {
-  display: flex; /* Flexbox for navbar links */
-  flex-grow: 1; /* Allow the navbar to grow */
+
   justify-content: flex-end; /* Space links evenly */
 }
 
 .navbar .nav-link {
-  padding: 0 10px; /* Padding between links */
-  color: #060504; /* Light text color */
+  color: #ada8a8; /* Light text color */
 }
-
+.nav-link:hover {
+  color: #292323;
+}
 .navbar .navbar-toggler {
   background-color: #303132; /* Dark toggle button */
   border: none;
 }
-
-
-
-
-
-.nav-link:hover {
-  color: #ffffff; /* Light text color on hover */
-  background-color: #292323; /* Optional background color on hover */
-}
-
 
 
 

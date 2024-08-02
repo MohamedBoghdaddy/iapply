@@ -6,7 +6,6 @@ const { Schema } = mongoose;
 const userSchema = new Schema(
   {
     role: { type: String, enum: ["user", "admin"], default: "user" }, // Add roles here
-
     username: { type: String, required: true, unique: true },
     email: {
       type: String,

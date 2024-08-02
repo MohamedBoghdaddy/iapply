@@ -1,16 +1,20 @@
-import User from "../models/UserModel.js";
-import bcrypt from "bcrypt";
+// controllers/AuthController.js
+import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+import User from "../models/UserModel.js";
 import multer from "multer";
 import path from "path";
-import fs from "fs";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 
-// Determine the directory name
+dotenv.config();
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const JWT_SECRET = process.env.JWT_SECRET;
+
+console.log("JWT_SECRET:", JWT_SECRET);
 
 // Configure multer
 const storage = multer.diskStorage({
@@ -26,208 +30,118 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage }).single("resume");
 
-const createToken = (_id) =>
-  jwt.sign({ _id }, process.env.JWT_SECRET, { expiresIn: "3d" });
+// Function to create a JWT token
+const createToken = (user) =>
+  jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: "1h" });
 
-export const createUser = async (req, res) => {
-  const { username, email, password, gender } = req.body;
+// User registration
+export const register = async (req, res) => {
+  const { username, email, password, role } = req.body;
 
   try {
-    const userExists = await User.findOne({ email });
-    if (userExists)
-      return res.status(400).json({ message: "User already exists" });
-
     const hashedPassword = await bcrypt.hash(password, 10);
+    const user = new User({ username, email, password: hashedPassword, role });
+    await user.save();
 
-    const newUser = new User({
-      username,
-      email,
-      password: hashedPassword,
-      gender,
-    });
-    await newUser.save();
+    const token = createToken(user);
 
-    const token = createToken(newUser._id);
-    res.cookie("token", token, { httpOnly: true, sameSite: "strict" });
-
-    res.status(201).json({
-      username: newUser.username,
-      email: newUser.email,
-      user: {
-        _id: newUser._id,
-        username: newUser.username,
-        email: newUser.email,
-        gender: newUser.gender,
-      },
-    });
+    res.status(201).json({ token, user: { username, email, role } });
   } catch (error) {
-    console.error("Signup error:", error);
-    res.status(500).json({ message: "Signup failed", error: error.message });
+    res.status(500).json({ message: "Registration failed", error });
   }
 };
 
-export const loginUser = async (req, res) => {
+// User login
+export const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
     const user = await User.findOne({ email });
-    if (!user)
-      return res.status(401).json({ message: "Invalid email or password" });
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch)
-      return res.status(401).json({ message: "Invalid email or password" });
+    const token = createToken(user);
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1d",
-    });
-
-    // Set the token in a cookie
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // Set secure flag for HTTPS
+      secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
     });
 
-    // Respond with user data and token
-    res.status(200).json({
-      token,
-      user: {
-        id: user._id,
-        email: user.email,
-        username: user.username,
-      },
-    });
+    res
+      .status(200)
+      .json({
+        token,
+        user: { username: user.username, email, role: user.role },
+      });
   } catch (error) {
-    console.error("Login error:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
+    res.status(500).json({ message: "Login failed", error });
   }
 };
 
-export const logoutUser = async (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return res
-        .status(500)
-        .json({ message: "Logout failed", error: err.message });
-    }
-    res.clearCookie("token");
-    res.status(200).json({ message: "Logout successful" });
-  });
-};
-
-export const getUser = async (req, res) => {
-  const { userId } = req.params;
+// Middleware for protecting routes
+export const auth = (req, res, next) => {
+  const token = req.headers.authorization?.split(" ")[1] || req.cookies.token;
+  if (!token) return res.status(401).json({ message: "Unauthorized" });
 
   try {
-    const token = req.header("Authorization").replace("Bearer ", "");
     const decoded = jwt.verify(token, JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (error) {
+    res.status(401).json({ message: "Invalid token" });
+  }
+};
 
-    const user = await User.findById(decoded.id);
+// Middleware for role-based access
+export const authorize =
+  (...roles) =>
+  (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
+    next();
+  };
+
+// User logout
+export const logoutUser = async (req, res) => {
+  res.clearCookie("token");
+  res.status(200).json({ message: "Logout successful" });
+};
+
+// Get user data
+export const getUser = async (req, res) => {
+  try {
+    const token = req.cookies.token;
+    if (!token) return res.status(401).json({ message: "Not authenticated" });
+
+    const { userId } = req.params;
+    jwt.verify(token, JWT_SECRET);
+    const user = await User.findById(userId, req.body, { new: true });
     if (!user) return res.status(404).json({ message: "User not found" });
+
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
+// Update user data
 export const updateUser = async (req, res) => {
-  const { userId } = req.params;
-  const {
-    username,
-    email,
-    password,
-    gender,
-    receiveNotifications,
-    profilePhoto,
-    firstName,
-    middleName,
-    lastName,
-    dateOfBirth,
-    currentNationality,
-    otherNationality,
-    currentVisaStatus,
-    disability,
-    primaryEmailAddress,
-    secondaryEmailAddress,
-    primaryPhoneNumber,
-    alternatePhoneNumber,
-    currentAddress,
-    country,
-    city,
-    zipCode,
-    preferredJobTitle,
-    preferredJobLocation,
-    primarySkill,
-    secondarySkill,
-    yearsOfExperience,
-    summary,
-    workExperience,
-    linkedin,
-    github,
-    education,
-    countries,
-    jobTitles,
-    applicationHistory,
-  } = req.body;
   try {
-    const user = await User.findById(userId);
+    const { userId } = req.params;
+    const user = await User.findById(userId, req.body, { new: true });
     if (!user) return res.status(404).json({ message: "User not found" });
-
-    user.username = username || user.username;
-    user.email = email || user.email;
-    user.gender = gender || user.gender;
-    user.receiveNotifications =
-      receiveNotifications ?? user.receiveNotifications;
-    user.profilePhoto = profilePhoto || user.profilePhoto;
-    user.firstName = firstName || user.firstName;
-    user.middleName = middleName || user.middleName;
-    user.lastName = lastName || user.lastName;
-    user.dateOfBirth = dateOfBirth || user.dateOfBirth;
-    user.currentNationality = currentNationality || user.currentNationality;
-    user.otherNationality = otherNationality || user.otherNationality;
-    user.currentVisaStatus = currentVisaStatus || user.currentVisaStatus;
-    user.disability = disability || user.disability;
-    user.primaryEmailAddress = primaryEmailAddress || user.primaryEmailAddress;
-    user.secondaryEmailAddress =
-      secondaryEmailAddress || user.secondaryEmailAddress;
-    user.primaryPhoneNumber = primaryPhoneNumber || user.primaryPhoneNumber;
-    user.alternatePhoneNumber =
-      alternatePhoneNumber || user.alternatePhoneNumber;
-    user.currentAddress = currentAddress || user.currentAddress;
-    user.country = country || user.country;
-    user.city = city || user.city;
-    user.zipCode = zipCode || user.zipCode;
-    user.preferredJobTitle = preferredJobTitle || user.preferredJobTitle;
-    user.preferredJobLocation =
-      preferredJobLocation || user.preferredJobLocation;
-    user.primarySkill = primarySkill || user.primarySkill;
-    user.secondarySkill = secondarySkill || user.secondarySkill;
-    user.yearsOfExperience = yearsOfExperience || user.yearsOfExperience;
-    user.summary = summary || user.summary;
-    user.workExperience = workExperience || user.workExperience;
-    user.linkedin = linkedin || user.linkedin;
-    user.github = github || user.github;
-    user.education = education || user.education;
-    user.countries = countries || user.countries;
-    user.jobTitles = jobTitles || user.jobTitles;
-    user.applicationHistory = applicationHistory || user.applicationHistory;
-
-    if (password) {
-      const hashedPassword = await bcrypt.hash(password, 10);
-      user.password = hashedPassword;
-    }
-    user.gender = gender || user.gender;
 
     await user.save();
-    res.status(200).json({ message: "User profile updated successfully" });
-
-    res.status(200).json(user);
+    res.status(200).json({ msg: "User updated successfully", user });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: error.message });
   }
 };
 
+// Delete user
 export const deleteUser = async (req, res) => {
   const { userId } = req.params;
 
@@ -237,6 +151,22 @@ export const deleteUser = async (req, res) => {
 
     await user.remove();
     res.status(200).json({ message: "User profile deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Check authentication status
+export const checkAuth = async (req, res) => {
+  try {
+    const token = req.cookies.token;
+    if (!token) return res.status(401).json({ message: "Not authenticated" });
+
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const user = await User.findById(decoded._id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.status(200).json({ user });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

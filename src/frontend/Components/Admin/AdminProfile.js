@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useContext } from "react";
-import { DashboardContext } from "../../../context/DashboardContext";
+import { AdminDashboardContext } from "../../../context/AdminDashboardContext";
 import "../styles/UserProfile.css";
-import { useAuthContext } from "../../../context/AuthContext"; // Adjust path if necessary
+import { useAuthContext } from "../../../context/AuthContext";
 
 const UserProfile = () => {
-  const { userProfile, fetchUserData, updateProfile } =
-    useContext(DashboardContext);
+  const { userProfile, fetchUserProfile, updateProfile } = useContext(
+    AdminDashboardContext
+  );
   const { user } = useAuthContext();
 
   const [formData, setFormData] = useState({});
@@ -16,7 +17,7 @@ const UserProfile = () => {
     const fetchData = async () => {
       try {
         if (!userProfile) {
-          await fetchUserData();
+          await fetchUserProfile();
           setFormData(userProfile || {});
         } else {
           setFormData(userProfile);
@@ -27,7 +28,7 @@ const UserProfile = () => {
     };
 
     fetchData();
-  }, [fetchUserData, userProfile]);
+  }, [fetchUserProfile, userProfile]);
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });

@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { useAuthContext } from '../context/AuthContext'; // Adjust path if necessary
+import { useAuthContext } from "../context/AuthContext"; // Adjust path if necessary
 import axios from "axios";
+import { deleteCookie } from "../utils/cookieUtils"; // Import your cookie utility
 
 export const useSignup = () => {
   const [username, setUsername] = useState("");
@@ -22,6 +23,7 @@ export const useSignup = () => {
     setSuccessMessage("");
 
     try {
+    
       const response = await axios.post(
         "http://localhost:4000/api/users/signup",
         {
@@ -34,7 +36,7 @@ export const useSignup = () => {
       );
 
       setSuccessMessage("Registration successful");
-      dispatch({ type: "LOGIN", payload: response.data.user });
+      dispatch({ type: "REGISTRATION_SUCCESS", payload: response.data.user });
     } catch (error) {
       console.error("Signup error:", error);
       setErrorMessage(error.response?.data?.message || "Signup failed");

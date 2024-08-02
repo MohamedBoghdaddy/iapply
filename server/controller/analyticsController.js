@@ -1,5 +1,5 @@
 import User from "../models/UserModel.js";
-import { AppliedJob } from "../models/AppliedJobModel.js";
+import  AppliedJob  from "../models/AppliedJobModel.js";
 import { Subscription } from "../models/Subscription.js";
 
 // Analytics for user data

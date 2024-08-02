@@ -2,13 +2,13 @@ import React from "react";
 import HeroSection from "./HeroSection";
 import StorytellingSection from "./StorytellingSection";
 import CallToActionSection from "./CallToActionSection";
-import "../../Components/styles/Home.css";
+import "../styles/Home.css";
 import WhoWeAre from "./WhoWeAre";
 import Serve from "./Serve";
 import HowItWorks from "./HowItWorks";
 import Features from "./Features";
 import Pricing from "./Pricing";
-
+import Contact from "./contact";
 const Home = () => {
   return (
     <div className="full-page">
@@ -31,7 +31,11 @@ const Home = () => {
       <section id="pricing">
         <Pricing />
       </section>
+       <section id="contact">
+        <Contact />
+      </section>
       <CallToActionSection />
+     
     </div>
   );
 };

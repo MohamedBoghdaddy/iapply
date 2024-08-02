@@ -1,5 +1,4 @@
 import React from "react";
-import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Login from "./frontend/Components/LoginSystem/Login/Login";
 import Signup from "./frontend/Components/LoginSystem/Signup/signup";
@@ -7,18 +6,20 @@ import Dashboard from "./frontend/Components/Dashboard/Dashboard";
 import Profile from "./frontend/Components/Dashboard/Profile";
 import ApplyToJobs from "./frontend/Components/Dashboard/ApplyToJobs";
 import Sidebar from "./frontend/Components/Dashboard/Sidebar";
-// import { DashboardProvider } from './context/DashboardContext';
 import JobHistory from "./frontend/Components/Dashboard/JobHistory";
 import PaymentHistory from "./frontend/Components/Dashboard/PaymentHistory";
 import AccountSettings from "./frontend/Components/Dashboard/AccountSettings";
-import AdminDashboard from "./frontend/Components/AdminDashboard/AdminDashboard";
-import Notifications from "./frontend/Components/AdminDashboard/Notifications";
+import Notifications from "./frontend/Components/Dashboard/Notification";
 import Home from "./frontend/Components/Home/Home";
 import Footer from "./frontend/Components/Home/Footer";
-import Contact from "./frontend/Components/contact/contact";
 import NavBar from "./frontend/Components/Home/NavBar";
-import Mininavbar from "./frontend/Components/Home/Mininavbar";
+import Mininavbar from "./frontend/Components/Home/MiniNavBar";
 import EmployeeList from "./frontend/Components/Dashboard/employeelist";
+
+// import EmployeeList from "./frontend/Components/Admin/employeelist";
+// import AdminProfile from "./frontend/Components/Admin/AdminProfile";
+// import AdminSidebar from "./frontend/Components/Admin/AdminSidebar";
+// import AdminDashboard from "./frontend/Components/Admin/AdminDashboard";
 const App = () => {
   return (
     <BrowserRouter>
@@ -59,7 +60,6 @@ const App = () => {
             <>
               <Mininavbar />
               <JobHistory />
-              <ApplyToJobs />
               <Sidebar />
             </>
           }
@@ -74,6 +74,26 @@ const App = () => {
             </>
           }
         />
+        {/* <Route
+          path="/AdminProfile"
+          element={
+            <>
+              <Mininavbar />
+              <AdminProfile />
+              <AdminSidebar />
+            </>
+          }
+        />
+        <Route
+          path="/AdminDashboard"
+          element={
+            <>
+              <Mininavbar />
+              <AdminDashboard />
+              <Sidebar />
+            </>
+          } 
+        />*/}
         <Route
           path="/ApplyToJobs "
           element={
@@ -131,18 +151,6 @@ const App = () => {
             <>
               <Mininavbar />
               <Signup />
-              <Footer />
-            </>
-          }
-        />
-        <Route path="/adminDashboard" element={<AdminDashboard />} />
-        <Route path="/notifications" element={<Notifications />} />
-        <Route
-          path="/contact"
-          element={
-            <>
-              <Mininavbar />
-              <Contact />
               <Footer />
             </>
           }

@@ -1,44 +1,29 @@
 import jwt from "jsonwebtoken";
 import User from "../models/UserModel.js";
 
-const JWT_SECRET = process.env.JWT_SECRET; // Ensure JWT_SECRET is properly loaded from environment variables
+const JWT_SECRET = process.env.JWT_SECRET;
 
 const auth = async (req, res, next) => {
+  const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
+
+  if (!token) {
+    return res.status(401).json({ message: "authorization denied" });
+  }
+
   try {
-    // Retrieve the token from cookies
-    const token = req.cookies.token;
-
-    if (!token) {
-      return res.status(401).json({ message: "No token provided" });
-    }
-
-    // Verify the token
-    jwt.verify(token, JWT_SECRET, async (err, decoded) => {
-      if (err) return res.status(403).json({ message: "Invalid token" });
-
-      // Find the user associated with the token
-      const user = await User.findOne({
-        _id: decoded._id,
-        "tokens.token": token,
-      });
-
-      if (!user) {
-        return res.status(401).json({ message: "User not found" });
-      }
-
-      req.token = token;
-      req.user = user;
-      next();
-    });
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.user = await User.findById(decoded._id).select("-password");
+    next();
   } catch (error) {
-    res.status(401).json({ message: "Authentication failed" });
+    console.error("Token verification failed:", error);
+    return res.status(401).json({ message: "Invalid token" });
   }
 };
 
 const authorizeRoles = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
-      return res.status(403).json({ message: "Access Denied" });
+      return res.status(403).json({ message: "Access denied. Admins only." });
     }
     next();
   };

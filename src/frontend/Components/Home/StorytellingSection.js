@@ -14,36 +14,26 @@ const StorytellingSection = () => (
         />
       </Col>
       <Col md={6}>
-        <h2>Our Story</h2>
+        <h2>Our Journey</h2>
         <p>
-          Welcome to the forefront of job searching: our AI-driven automatic job
-          search portal, a pioneering initiative by a seasoned team from the
-          management, training, technology, and IT sectors. Our expertise spans
-          various disciplines, uniting to revolutionize how job seekers connect
-          with opportunities.
+          Born from a shared vision, we are more than just a job portal—we are a
+          beacon for those seeking purpose in their careers. Our team, with
+          roots in management, technology, and IT, came together with a singular
+          goal: to make finding the right job not just easier, but meaningful.
         </p>
         <p>
-          We're not just innovators; we're recognized leaders, having garnered
-          numerous national and international awards for our global
-          contributions to technology and employment solutions. Our platform
-          leverages cutting-edge AI technology to streamline the job search
-          process, ensuring that candidates find not just any job, but the right
-          fit—quickly and efficiently.
+          We've been recognized for our impact, but what drives us is the
+          opportunity to change lives. Our AI-powered platform is not just about
+          finding jobs; it's about matching people with opportunities that feel
+          like home.
         </p>
         <p>
-          Our mission is simple yet ambitious: to empower job seekers worldwide
-          by transforming the job searching landscape. With our intelligent
-          tools, users can automatically match with positions that align with
-          their skills, experience, and preferences, saving time and increasing
-          success rates.
+          This journey is personal. We know the weight of seeking something more
+          than just work, and we're here to guide you toward that perfect fit.
+          Wherever you are in your career, let us help you find the path that
+          was meant for you.
         </p>
-        <p>
-          Join us on this transformative journey. Whether you're seeking your
-          first job, a career change, or a new opportunity, our portal is
-          designed to navigate the complexities of the job market and propel you
-          towards your professional goals. Start your search with us today, and
-          experience the future of job hunting!
-        </p>
+        <p>Start your search with us, and let’s build your future together.</p>
       </Col>
     </Row>
   </Container>

@@ -28,36 +28,11 @@ const Sidebar = () => {
             <FaUser /> Profile
           </Link>
         </li>
-
-        {/* Conditionally render Employee List for admin users only */}
-        {isAuthenticated && user.role === "admin" && (
           <li>
             <Link to="/EmployeeList">
               <FaUser /> Employee List
             </Link>
           </li>
-        )}
-        {isAuthenticated && user.role === "user" && (
-          <li>
-            <Link to="/JobHistory">
-              <FaHistory /> Job History
-            </Link>
-          </li>
-        )}
-        {isAuthenticated && user.role === "user" && (
-          <li>
-            <Link to="/ApplyToJobs">
-              <FaHistory /> Apply to Jobs
-            </Link>
-          </li>
-        )}
-        {isAuthenticated && user.role === "user" && (
-          <li>
-            <Link to="/PaymentHistory">
-              <FaHistory /> Payment History
-            </Link>
-          </li>
-        )}
         <li>
           <Link to="/AccountSettings">
             <FaCog /> Account Settings
