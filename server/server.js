@@ -143,4 +143,9 @@ app.use("/api/protected-route", verifyToken, (req, res) => {
   res.json({ message: "This is a protected route" });
 });
 
+
+export default (req, res) => {
+  res.status(200).json({ message: "Hello from Node.js on Vercel!" });
+};
+
 export { app, razorpay };
