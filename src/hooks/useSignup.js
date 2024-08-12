@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useAuthContext } from "../context/AuthContext"; // Adjust path if necessary
 import axios from "axios";
-import { deleteCookie } from "../utils/cookieUtils"; // Import your cookie utility
 
 export const useSignup = () => {
   const [username, setUsername] = useState("");

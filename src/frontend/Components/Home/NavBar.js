@@ -7,7 +7,6 @@ import { Link as ScrollLink } from "react-scroll";
 import logo from "../static/images/logo.jpeg"; // Adjust path as per your project
 import Login from "../LoginSystem/Login/Login"; // Adjust path to Login component
 import { useAuthContext } from "../../../context/AuthContext"; // Adjust path if necessary
-import axios from "axios";
 import { useLogout } from "../../../hooks/useLogout";
 
 import "../styles/navbar.css";

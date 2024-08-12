@@ -1,13 +1,11 @@
 import express from "express";
 import mongoose from "mongoose";
-import path from "path";
 import multer from "multer";
 import cors from "cors";
 import Razorpay from "razorpay";
 import dotenv from "dotenv";
 import session from "express-session";
 import connectMongoDBSession from "connect-mongodb-session";
-import axios from "axios";
 import cookieParser from "cookie-parser";
 import userroutes from "./routes/userroutes.js";
 import jobRoutes from "./routes/jobRoutes.js";
@@ -16,7 +14,6 @@ import analyticRoutes from "./routes/analyticRoutes.js";
 import employeeRoutes from "./routes/employeeRoutes.js"; // Import employee routes
 import User from "./models/UserModel.js";
 import jwt from "jsonwebtoken";
-import morgan from "morgan";
 
 dotenv.config();
 

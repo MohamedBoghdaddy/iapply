@@ -2,7 +2,6 @@ import React from "react";
 import "../../styles/login.css"; // Adjust the path as needed
 import { Link } from "react-router-dom";
 import { useLogin } from "../../../../hooks/LoginHook";
-import { login } from "../../../../api"; // Adjust the path as needed
 
 
 const Login = ({ onLoginSuccess }) => {

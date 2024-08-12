@@ -1,5 +1,4 @@
 import React, { useContext, useEffect } from "react";
-import useDashboard from "../../../hooks/useDashboard";
 import { DashboardContext } from "./context/DashboardContext";
 
 import "../styles/JobApplication.css";

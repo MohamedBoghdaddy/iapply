@@ -1,7 +1,7 @@
 import requests
 import os
-import logging
-import traceback
+# import logging
+# import traceback
 import numpy as np
 from cv_analysis import analyze_cv
 from job_clustering import fetch_jobs, cluster_jobs
