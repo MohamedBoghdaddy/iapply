@@ -13,7 +13,7 @@ import Notifications from "./frontend/Components/Dashboard/Notification";
 import Home from "./frontend/Components/Home/Home";
 import Footer from "./frontend/Components/Home/Footer";
 import NavBar from "./frontend/Components/Home/NavBar";
-import MiniNavBar from "./frontend/Components/Home/MiniNavBar";
+import MiniNavBar from "./frontend/Components/Home/Mininavbar";
 import EmployeeList from "./frontend/Components/Dashboard/employeelist";
 // import EmployeeList from "./frontend/Components/Admin/employeelist";
 // import AdminProfile from "./frontend/Components/Admin/AdminProfile";
