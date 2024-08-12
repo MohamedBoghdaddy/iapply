@@ -1,5 +1,6 @@
+import axios from "axios";
 import User from "../models/UserModel.js";
-import  AppliedJob  from "../models/AppliedJobModel.js";
+import AppliedJob from "../models/AppliedJobModel.js";
 import { Subscription } from "../models/Subscription.js";
 
 // Controller function to get user analytics
@@ -64,5 +65,75 @@ export const getSubscriptionAnalytics = async (req, res) => {
     res
       .status(500)
       .json({ message: "Failed to fetch subscription analytics", error });
+  }
+};
+
+// Forward request to AI server to analyze CV
+export const analyzeCv = async (req, res) => {
+  try {
+    const response = await axios.post(
+      "http://localhost:5000/api/analyze-cv",
+      req.body
+    );
+    res.json(response.data);
+  } catch (error) {
+    console.error("Error communicating with AI server:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+// Forward request to AI server to fetch jobs
+export const fetchJobs = async (req, res) => {
+  try {
+    const response = await axios.post(
+      "http://localhost:5000/api/fetch-jobs",
+      req.body
+    );
+    res.json(response.data);
+  } catch (error) {
+    console.error("Error communicating with AI server:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+// Forward request to AI server to cluster jobs
+export const clusterJobs = async (req, res) => {
+  try {
+    const response = await axios.post(
+      "http://localhost:5000/api/cluster-jobs",
+      req.body
+    );
+    res.json(response.data);
+  } catch (error) {
+    console.error("Error communicating with AI server:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+// Forward request to AI server to match profile to job
+export const matchProfile = async (req, res) => {
+  try {
+    const response = await axios.post(
+      "http://localhost:5000/api/match-profile",
+      req.body
+    );
+    res.json(response.data);
+  } catch (error) {
+    console.error("Error communicating with AI server:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+// Forward request to AI server to apply to jobs
+export const applyJobs = async (req, res) => {
+  try {
+    const response = await axios.post(
+      "http://localhost:5000/api/apply-jobs",
+      req.body
+    );
+    res.json(response.data);
+  } catch (error) {
+    console.error("Error communicating with AI server:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };

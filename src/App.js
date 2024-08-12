@@ -15,7 +15,6 @@ import Footer from "./frontend/Components/Home/Footer";
 import NavBar from "./frontend/Components/Home/NavBar";
 import Mininavbar from "./frontend/Components/Home/MiniNavBar";
 import EmployeeList from "./frontend/Components/Dashboard/employeelist";
-
 // import EmployeeList from "./frontend/Components/Admin/employeelist";
 // import AdminProfile from "./frontend/Components/Admin/AdminProfile";
 // import AdminSidebar from "./frontend/Components/Admin/AdminSidebar";
@@ -94,8 +93,9 @@ const App = () => {
             </>
           } 
         />*/}
+
         <Route
-          path="/ApplyToJobs "
+          path="/ApplyToJobs"
           element={
             <>
               <Mininavbar />

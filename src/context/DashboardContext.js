@@ -6,7 +6,10 @@ import { useAuthContext } from "../context/AuthContext";
 export const DashboardContext = createContext();
 
 const DashboardProvider = ({ children }) => {
-  const { user, isAuthenticated } = useAuthContext();
+    const { state } = useAuthContext();
+
+  const { user, isAuthenticated } = state;
+
   const [view, setView] = useState("list");
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);

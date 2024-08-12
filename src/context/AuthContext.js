@@ -19,7 +19,12 @@ const authReducer = (state, action) => {
         loading: false,
       };
     case "LOGOUT_SUCCESS":
-      return { ...state, user: null, isAuthenticated: false, loading: false };
+      return {
+        ...state,
+        user: null,
+        isAuthenticated: false,
+        loading: false,
+      };
     case "USER_LOADED":
       return {
         ...state,
@@ -36,16 +41,6 @@ const authReducer = (state, action) => {
 
 export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
-
-  const login = (userData) => {
-    dispatch({ type: "LOGIN_SUCCESS", payload: userData });
-    localStorage.setItem("user", JSON.stringify(userData)); // Save user to localStorage
-  };
-
-  const logout = () => {
-    dispatch({ type: "LOGOUT_SUCCESS" });
-    localStorage.removeItem("user"); // Remove user from localStorage
-  };
 
   const checkAuth = async () => {
     try {
@@ -81,28 +76,23 @@ export const AuthProvider = ({ children }) => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       try {
-        const user = JSON.parse(storedUser);
+        const { token, user } = JSON.parse(storedUser);
         dispatch({ type: "LOGIN_SUCCESS", payload: user });
+
+        if (token) {
+          axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        }
       } catch (error) {
         console.error("Failed to parse user from localStorage:", error);
-        localStorage.removeItem("user");
+        dispatch({ type: "AUTH_ERROR" });
       }
+    } else {
+      checkAuth();
     }
-    checkAuth();
   }, []);
 
   return (
-    <AuthContext.Provider
-      value={{
-        ...state,
-        user: state.user,
-        isAuthenticated: state.isAuthenticated,
-        loading: state.loading,
-        login,
-        logout,
-        dispatch,
-      }}
-    >
+    <AuthContext.Provider value={{ state, dispatch }}>
       {children}
     </AuthContext.Provider>
   );

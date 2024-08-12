@@ -5,7 +5,9 @@ import "../styles/Sidebar.css";
 import { useAuthContext } from "../../../context/AuthContext";
 
 const Sidebar = () => {
-  const { user, isAuthenticated } = useAuthContext();
+    const { state } = useAuthContext();
+
+  const { user, isAuthenticated } = state;
 
   console.log("Authenticated:", isAuthenticated);
   console.log("User:", user);

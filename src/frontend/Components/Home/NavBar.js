@@ -17,8 +17,9 @@ const NavBar = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const navigate = useNavigate();
-  const { user, dispatch } = useAuthContext(); // Get the user and dispatch from AuthContext
-  const { logout } = useLogout();
+  const { state } = useAuthContext();
+
+  const { user, isAuthenticated } = state;  const { logout } = useLogout();
 
   const handleLoginModalOpen = () => {
     setShowLoginModal(true);

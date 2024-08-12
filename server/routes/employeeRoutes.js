@@ -10,10 +10,10 @@ import { auth, authorizeRoles } from "../Middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/create", auth, authorizeRoles("admin"), createEmployee);
-router.get("/getall", auth, authorizeRoles("admin"), getAllEmployees);
-router.get("/getone/:id", auth, authorizeRoles("admin"), getEmployee);
-router.put("/update/:id", auth, authorizeRoles("admin"), updateEmployee);
-router.delete("/delete/:id", auth, authorizeRoles("admin"), deleteEmployee);
+router.get("/api/getall", auth, authorizeRoles, getAllEmployees);
+router.get("/api/getone/:employeeId", auth, authorizeRoles, getEmployee);
+router.put("/api/update/:employeeId", auth, authorizeRoles, updateEmployee);
+router.delete("/api/delete/:employeeId", auth, authorizeRoles, deleteEmployee);
+router.post("/api/create", auth, authorizeRoles, createEmployee);
 
 export default router;

@@ -99,12 +99,12 @@ const createToken = (_id, res) => {
   const token = jwt.sign({ _id }, JWT_SECRET, {
     expiresIn: "3d",
   });
- res.cookie("token", token, {
-   httpOnly: true, // Helps mitigate XSS attacks by preventing client-side scripts from accessing the data
-   secure: false, // Ensure this is false for development (HTTP)
-   sameSite: "strict", // "lax" or "strict" can be used for CSRF protection, adjust based on your needs
-   maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
- });
+  res.cookie("token", token, {
+    httpOnly: true, // Helps mitigate XSS attacks by preventing client-side scripts from accessing the data
+    secure: false, // Ensure this is false for development (HTTP)
+    sameSite: "strict", // "lax" or "strict" can be used for CSRF protection, adjust based on your needs
+    maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+  });
 
   return token;
 };
@@ -125,8 +125,6 @@ const verifyToken = (req, res, next) => {
   }
 };
 
-
-
 // Routes
 app.use("/api/users", userroutes);
 app.use("/api/jobs", jobRoutes);
@@ -146,20 +144,6 @@ app.get("/api/users/me", verifyToken, async (req, res) => {
 // Protecting routes
 app.use("/api/protected-route", verifyToken, (req, res) => {
   res.json({ message: "This is a protected route" });
-});
-
-// Job application route
-app.post("/api/apply-jobs", async (req, res) => {
-  try {
-    const response = await axios.post(
-      "http://localhost:5000/api/apply-jobs",
-      req.body
-    );
-    res.json(response.data);
-  } catch (error) {
-    console.error("Error communicating with AI server:", error.message);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
 });
 
 export { app, razorpay };

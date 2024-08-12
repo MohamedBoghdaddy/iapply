@@ -1,10 +1,14 @@
 // src/context/AdminDashboardContext.js
 import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
+import { useAuthContext } from "../context/AuthContext";
 
 export const AdminDashboardContext = createContext();
 
 const AdminDashboardProvider = ({ children }) => {
+    const { state } = useAuthContext();
+
+    const { user, isAuthenticated } = state;
   const [accountSettings, setAccountSettings] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
 

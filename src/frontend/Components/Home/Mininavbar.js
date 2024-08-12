@@ -14,8 +14,9 @@ const Mininavbar = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const { logout } = useLogout();
-  const { user, isAuthenticated } = useAuthContext();
-  const navigate = useNavigate();
+  const { state } = useAuthContext();
+
+  const { user, isAuthenticated } = state;  const navigate = useNavigate();
 
   const handleLoginModalOpen = () => {
     setShowLoginModal(true);
@@ -33,7 +34,7 @@ const Mininavbar = () => {
   };
 
   return (
-    <Navbar expand="lg" className="navbar">
+    <Navbar expand="lg" className="navbar" variant="dark" expanded={expanded}>
       <Container fluid>
         <Navbar.Brand as={Link} to="/" className="navbar-brand">
           <img
@@ -47,7 +48,7 @@ const Mininavbar = () => {
           className="navbar-toggler"
           onClick={handleNavCollapse}
         />
-        <Navbar.Collapse
+        <Navbar.Collapse 
           id="navbarScroll"
           className="navbar-collapse"
           in={expanded}

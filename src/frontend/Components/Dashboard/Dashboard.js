@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import axios from "axios";
 import Notification from "./Notification";
-import Sidebar from "../Dashboard/Sidebar";
 import "../styles/Dashboard.css";
 
 const Dashboard = () => {
@@ -44,7 +43,6 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard">
-      <Sidebar />
       <div className="main">
         <div className="main-top">
           <h1>Dashboard</h1>

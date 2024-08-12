@@ -27,23 +27,26 @@ export const useLogin = (onLoginSuccess) => {
 
       const { token, user } = response.data;
 
-      if (token && (user || response.data.message === "Logged in")) {
-        dispatch({ type: "LOGIN_SUCCESS", payload: user || {} });
-        setSuccessMessage("Login successful");
-        onLoginSuccess();
+      // Store token and user data in localStorage
+      localStorage.setItem("user", JSON.stringify({ token, user }));
 
-        // Set cookies
-        setCookie("token", token);
+    if (token && user) {
+      dispatch({ type: "LOGIN_SUCCESS", payload: user || {} });
+      setSuccessMessage("Login successful");
+      onLoginSuccess();
 
-        if (user) {
-          setCookie("username", user.username);
-          setCookie("email", user.email);
-          setCookie("userId", user._id);
-        }
-      } else {
-        console.error("Unexpected response format:", response.data);
-        throw new Error("Invalid response data");
+      // Set cookies
+      setCookie("token", token);
+
+      if (user) {
+        setCookie("username", user.username);
+        setCookie("email", user.email);
+        setCookie("userId", user._id);
       }
+    } else {
+      console.error("Unexpected response format:", response.data);
+      throw new Error("Invalid response data");
+    }
     } catch (error) {
       console.error("Login error:", error);
       setErrorMessage(error.response?.data?.message || "Login failed");

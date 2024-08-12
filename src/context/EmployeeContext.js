@@ -6,8 +6,10 @@ import { useAuthContext } from "../context/AuthContext";
 export const EmployeeContext = createContext();
 
 const EmployeeProvider = ({ children }) => {
-  const { isAuthenticated, user } = useAuthContext();
-  const [view, setView] = useState("list");
+  const { state } = useAuthContext();
+
+  const { user, isAuthenticated } = state;
+    const [view, setView] = useState("list");
   const [employeeList, setEmployeeList] = useState([]);
   const [employee, setEmployee] = useState({
     FirstName: "",

@@ -1,4 +1,3 @@
-// controllers/AuthController.js
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
@@ -13,8 +12,6 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const JWT_SECRET = process.env.JWT_SECRET;
-
-console.log("JWT_SECRET:", JWT_SECRET);
 
 // Configure multer
 const storage = multer.diskStorage({
@@ -69,25 +66,26 @@ export const login = async (req, res) => {
       sameSite: "strict",
     });
 
-    res
-      .status(200)
-      .json({
-        token,
-        user: { username: user.username, email, role: user.role },
-      });
+    res.status(200).json({
+      token,
+      user: { username: user.username, email, role: user.role },
+    });
   } catch (error) {
     res.status(500).json({ message: "Login failed", error });
   }
 };
 
 // Middleware for protecting routes
-export const auth = (req, res, next) => {
+export const auth = async (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1] || req.cookies.token;
   if (!token) return res.status(401).json({ message: "Unauthorized" });
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    req.user = decoded;
+    req.user = await User.findById(decoded.id).select("-password");
+    if (!req.user) {
+      return res.status(404).json({ message: "User not found" });
+    }
     next();
   } catch (error) {
     res.status(401).json({ message: "Invalid token" });
@@ -113,12 +111,8 @@ export const logoutUser = async (req, res) => {
 // Get user data
 export const getUser = async (req, res) => {
   try {
-    const token = req.cookies.token;
-    if (!token) return res.status(401).json({ message: "Not authenticated" });
-
     const { userId } = req.params;
-    jwt.verify(token, JWT_SECRET);
-    const user = await User.findById(userId, req.body, { new: true });
+    const user = await User.findById(userId).select("-password");
     if (!user) return res.status(404).json({ message: "User not found" });
 
     res.status(200).json(user);
@@ -131,11 +125,15 @@ export const getUser = async (req, res) => {
 export const updateUser = async (req, res) => {
   try {
     const { userId } = req.params;
-    const user = await User.findById(userId, req.body, { new: true });
-    if (!user) return res.status(404).json({ message: "User not found" });
+    const updatedUser = await User.findByIdAndUpdate(userId, req.body, {
+      new: true,
+    }).select("-password");
+    if (!updatedUser)
+      return res.status(404).json({ message: "User not found" });
 
-    await user.save();
-    res.status(200).json({ msg: "User updated successfully", user });
+    res
+      .status(200)
+      .json({ msg: "User updated successfully", user: updatedUser });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -163,7 +161,7 @@ export const checkAuth = async (req, res) => {
     if (!token) return res.status(401).json({ message: "Not authenticated" });
 
     const decoded = jwt.verify(token, JWT_SECRET);
-    const user = await User.findById(decoded._id);
+    const user = await User.findById(decoded.id).select("-password");
     if (!user) return res.status(404).json({ message: "User not found" });
 
     res.status(200).json({ user });
