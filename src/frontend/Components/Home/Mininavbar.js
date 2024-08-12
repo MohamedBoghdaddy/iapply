@@ -10,13 +10,14 @@ import Login from "../LoginSystem/Login/Login"; // Adjust path to Login componen
 import { useLogout } from "../../../hooks/useLogout";
 import { useAuthContext } from "../../../context/AuthContext"; // Adjust path if necessary
 
-const Mininavbar = () => {
+const MiniNavBar = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const { logout } = useLogout();
   const { state } = useAuthContext();
 
-  const { user, isAuthenticated } = state;  const navigate = useNavigate();
+  const { user, isAuthenticated } = state;
+  const navigate = useNavigate();
 
   const handleLoginModalOpen = () => {
     setShowLoginModal(true);
@@ -48,7 +49,7 @@ const Mininavbar = () => {
           className="navbar-toggler"
           onClick={handleNavCollapse}
         />
-        <Navbar.Collapse 
+        <Navbar.Collapse
           id="navbarScroll"
           className="navbar-collapse"
           in={expanded}
@@ -118,4 +119,4 @@ const Mininavbar = () => {
   );
 };
 
-export default Mininavbar;
+export default MiniNavBar;
