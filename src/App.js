@@ -13,7 +13,7 @@ import Notifications from "./frontend/Components/Dashboard/Notification";
 import Home from "./frontend/Components/Home/Home";
 import Footer from "./frontend/Components/Home/Footer";
 import NavBar from "./frontend/Components/Home/NavBar";
-import Mininavbar from "./frontend/Components/Home/MiniNavBar";
+import MiniNavBar from "./frontend/Components/Home/MiniNavBar";
 import EmployeeList from "./frontend/Components/Dashboard/employeelist";
 // import EmployeeList from "./frontend/Components/Admin/employeelist";
 // import AdminProfile from "./frontend/Components/Admin/AdminProfile";
@@ -37,7 +37,7 @@ const App = () => {
           path="/Dashboard"
           element={
             <>
-              <Mininavbar />
+              <MiniNavBar />
               <Dashboard />
               <Sidebar />
             </>
@@ -47,7 +47,7 @@ const App = () => {
           path="/profile"
           element={
             <>
-              <Mininavbar />
+              <MiniNavBar />
               <Profile />
               <Sidebar />
             </>
@@ -57,7 +57,7 @@ const App = () => {
           path="/JobHistory"
           element={
             <>
-              <Mininavbar />
+              <MiniNavBar />
               <JobHistory />
               <Sidebar />
             </>
@@ -67,7 +67,7 @@ const App = () => {
           path="/EmployeeList"
           element={
             <>
-              <Mininavbar />
+              <MiniNavBar />
               <EmployeeList />
               <Sidebar />
             </>
@@ -98,7 +98,7 @@ const App = () => {
           path="/ApplyToJobs"
           element={
             <>
-              <Mininavbar />
+              <MiniNavBar />
               <ApplyToJobs />
               <Sidebar />
             </>
@@ -108,7 +108,7 @@ const App = () => {
           path="/PaymentHistory"
           element={
             <>
-              <Mininavbar />
+              <MiniNavBar />
               <PaymentHistory />
               <Sidebar />
             </>
@@ -118,7 +118,7 @@ const App = () => {
           path="/AccountSettings"
           element={
             <>
-              <Mininavbar />
+              <MiniNavBar />
               <AccountSettings />
               <Sidebar />
             </>
@@ -128,7 +128,7 @@ const App = () => {
           path="/Notifications"
           element={
             <>
-              <Mininavbar />
+              <MiniNavBar />
               <Notifications />
             </>
           }
@@ -139,7 +139,7 @@ const App = () => {
           path="/login"
           element={
             <>
-              <Mininavbar />
+              <MiniNavBar />
               <Login />
               <Footer />
             </>
@@ -149,7 +149,7 @@ const App = () => {
           path="/signup"
           element={
             <>
-              <Mininavbar />
+              <MiniNavBar />
               <Signup />
               <Footer />
             </>
