@@ -48,7 +48,7 @@ app.use(cookieParser(SESSION_SECRET));
 
 app.use(
   cors({
-    origin: "http://localhost:3000", // Adjust to your frontend's URL
+    origin: ["http://localhost:3000", "https://iapplyhki.vercel.app/"],
     credentials: true,
   })
 );
