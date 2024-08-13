@@ -1,5 +1,5 @@
 // src/context/AdminDashboardContext.js
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { useAuthContext } from "../context/AuthContext";
 
@@ -41,7 +41,7 @@ const AdminDashboardProvider = ({ children }) => {
     }
   };
 
-  const fetchUserProfile = async () => {
+  const fetchUserProfile = useCallback(async () => {
     try {
       const response = await axios.get("/api/user-profile", {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -50,7 +50,13 @@ const AdminDashboardProvider = ({ children }) => {
     } catch (error) {
       console.error("Error fetching user profile:", error);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchAccountSettings();
+    fetchUserProfile();
+  }, [fetchAccountSettings, fetchUserProfile]);
+
 
   const updateProfile = async (formData) => {
     try {

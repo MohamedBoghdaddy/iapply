@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useAuthContext } from "../context/AuthContext";
@@ -6,8 +6,7 @@ import { useAuthContext } from "../context/AuthContext";
 export const DashboardContext = createContext();
 
 const DashboardProvider = ({ children }) => {
-    const { state } = useAuthContext();
-
+  const { state } = useAuthContext();
   const { user, isAuthenticated } = state;
 
   const [view, setView] = useState("list");
@@ -22,13 +21,7 @@ const DashboardProvider = ({ children }) => {
   const [formData, setFormData] = useState({});
   const [editingId, setEditingId] = useState(null);
 
-  useEffect(() => {
-    if (isAuthenticated && user && view === "profile") {
-      fetchUserData();
-    }
-  }, [isAuthenticated, user, view]);
-
-  const fetchUserData = async () => {
+  const fetchUserData = useCallback(async () => {
     try {
       if (user && user._id) {
         const response = await axios.get(
@@ -45,7 +38,32 @@ const DashboardProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (isAuthenticated && user && view === "profile") {
+      fetchUserData();
+    }
+  }, [isAuthenticated, user, view, fetchUserData]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const profileData = userData.userProfile;
+        if (!profileData) {
+          await fetchUserData();
+          setFormData(userData.userProfile || {});
+        } else {
+          setFormData(profileData);
+        }
+        console.log("Form Data:", formData); // Debugging
+      } catch (error) {
+        console.error("Failed to fetch user profile:", error);
+      }
+    };
+
+    fetchData();
+  }, [fetchUserData, userData]);
 
   const updateProfile = async (formData, cvFile) => {
     if (editingId) {
@@ -79,25 +97,6 @@ const DashboardProvider = ({ children }) => {
       }
     }
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const profileData = userData.userProfile;
-        if (!profileData) {
-          await fetchUserData();
-          setFormData(userData.userProfile || {});
-        } else {
-          setFormData(profileData);
-        }
-        console.log("Form Data:", formData); // Debugging
-      } catch (error) {
-        console.error("Failed to fetch user profile:", error);
-      }
-    };
-
-    fetchData();
-  }, [fetchUserData, userData]);
 
   return (
     <DashboardContext.Provider

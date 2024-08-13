@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useReducer, useEffect } from "react";
+import React, {
+  createContext,
+  useContext,
+  useReducer,
+  useEffect,
+  useCallback,
+} from "react";
 import axios from "axios";
 
 const AuthContext = createContext();
@@ -42,7 +48,7 @@ const authReducer = (state, action) => {
 export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  const checkAuth = async () => {
+  const checkAuth = useCallback(async () => {
     try {
       const token =
         document.cookie
@@ -70,7 +76,7 @@ export const AuthProvider = ({ children }) => {
       console.error("Auth check failed", error);
       dispatch({ type: "AUTH_ERROR" });
     }
-  };
+  }, [state.isAuthenticated]);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -89,8 +95,7 @@ export const AuthProvider = ({ children }) => {
     } else {
       checkAuth();
     }
-  }, []);
-
+  }, [checkAuth]);
   return (
     <AuthContext.Provider value={{ state, dispatch }}>
       {children}

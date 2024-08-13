@@ -1,4 +1,10 @@
-import React, { createContext, useState, useEffect, useMemo } from "react";
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+} from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useAuthContext } from "../context/AuthContext";
@@ -7,9 +13,9 @@ export const EmployeeContext = createContext();
 
 const EmployeeProvider = ({ children }) => {
   const { state } = useAuthContext();
-
   const { user, isAuthenticated } = state;
-    const [view, setView] = useState("list");
+
+  const [view, setView] = useState("list");
   const [employeeList, setEmployeeList] = useState([]);
   const [employee, setEmployee] = useState({
     FirstName: "",
@@ -22,38 +28,37 @@ const EmployeeProvider = ({ children }) => {
   });
   const [editingId, setEditingId] = useState(null);
 
-  useEffect(() => {
-    if (isAuthenticated && user.role === "admin" && view === "list") {
-      fetchEmployeeList();
-    }
-  }, [isAuthenticated, user, view]);
-
-  const fetchEmployeeList = async () => {
-    try {
-      const response = await axios.get("http://localhost:4000/api/getall", {
-        withCredentials: true,
-      });
-      setEmployeeList(response.data);
-    } catch (error) {
-      console.error("Error fetching employee list:", error);
-    }
-  };
-
-  const fetchEmployee = async (employeeId) => {
-    if (isAuthenticated && user.role === "admin") {
+  // Ensure user is defined before accessing user.role
+  const fetchEmployeeList = useCallback(async () => {
+    if (user && user.role === "admin") {
       try {
-        const response = await axios.get(
-          `http://localhost:4000/api/getone/${employeeId}`,
-          { withCredentials: true }
-        );
-        setEmployee(response.data);
+        const response = await axios.get("http://localhost:4000/api/getall", {
+          withCredentials: true,
+        });
+        setEmployeeList(response.data);
       } catch (error) {
-        console.error("Error fetching employee:", error);
+        console.error("Error fetching employee list:", error);
       }
     }
-  };
+  }, [user]);
 
-  // Memoizing the context value to prevent unnecessary re-renders
+  const fetchEmployee = useCallback(
+    async (employeeId) => {
+      if (isAuthenticated && user && user.role === "admin") {
+        try {
+          const response = await axios.get(
+            `http://localhost:4000/api/getone/${employeeId}`,
+            { withCredentials: true }
+          );
+          setEmployee(response.data);
+        } catch (error) {
+          console.error("Error fetching employee:", error);
+        }
+      }
+    },
+    [isAuthenticated, user]
+  );
+
   const contextValue = useMemo(
     () => ({
       view,
@@ -64,7 +69,7 @@ const EmployeeProvider = ({ children }) => {
       fetchEmployeeList,
       fetchEmployee,
       deleteEmployee: async (employeeId) => {
-        if (isAuthenticated && user.role === "admin") {
+        if (isAuthenticated && user && user.role === "admin") {
           try {
             await axios.delete(
               `http://localhost:4000/api/delete/${employeeId}`,
@@ -105,7 +110,7 @@ const EmployeeProvider = ({ children }) => {
       },
       handleSubmit: async (e) => {
         e.preventDefault();
-        if (isAuthenticated && user.role === "admin") {
+        if (isAuthenticated && user && user.role === "admin") {
           try {
             if (editingId) {
               const response = await axios.put(
@@ -134,8 +139,23 @@ const EmployeeProvider = ({ children }) => {
         }
       },
     }),
-    [view, employeeList, employee, editingId, isAuthenticated, user]
+    [
+      view,
+      employeeList,
+      employee,
+      editingId,
+      isAuthenticated,
+      user,
+      fetchEmployeeList,
+      fetchEmployee,
+    ]
   );
+
+  useEffect(() => {
+    if (isAuthenticated && user && user.role === "admin" && view === "list") {
+      fetchEmployeeList();
+    }
+  }, [isAuthenticated, user, view, fetchEmployeeList]);
 
   return (
     <EmployeeContext.Provider value={contextValue}>
