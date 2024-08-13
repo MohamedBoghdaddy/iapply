@@ -63,7 +63,7 @@ const DashboardProvider = ({ children }) => {
     };
 
     fetchData();
-  }, [fetchUserData, userData]);
+  }, [fetchUserData, userData, formData]); // Add formData to the dependency array
 
   const updateProfile = async (formData, cvFile) => {
     if (editingId) {
