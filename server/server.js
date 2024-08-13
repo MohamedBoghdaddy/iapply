@@ -11,7 +11,7 @@ import userroutes from "./routes/userroutes.js";
 import jobRoutes from "./routes/jobRoutes.js";
 import accountSettingsRoutes from "./routes/accountSettingRoutes.js";
 import analyticRoutes from "./routes/analyticRoutes.js";
-import employeeRoutes from "./routes/employeeRoutes.js"; // Import employee routes
+import employeeRoutes from "./routes/employeeRoutes.js";
 import User from "./models/UserModel.js";
 import jwt from "jsonwebtoken";
 
@@ -48,7 +48,7 @@ app.use(cookieParser(SESSION_SECRET));
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://iapplyhki.vercel.app/"],
+    origin: ["http://localhost:3000", "https://iapplyhki.vercel.app"],
     credentials: true,
   })
 );
@@ -77,9 +77,6 @@ mongoose
   })
   .then(() => {
     console.log("MongoDB connected successfully");
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
   })
   .catch((error) => {
     console.error("Database connection error:", error);
@@ -97,10 +94,10 @@ const createToken = (_id, res) => {
     expiresIn: "3d",
   });
   res.cookie("token", token, {
-    httpOnly: true, // Helps mitigate XSS attacks by preventing client-side scripts from accessing the data
-    secure: false, // Ensure this is false for development (HTTP)
-    sameSite: "strict", // "lax" or "strict" can be used for CSRF protection, adjust based on your needs
-    maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+    httpOnly: true,
+    secure: false,
+    sameSite: "strict",
+    maxAge: 1000 * 60 * 60 * 24 * 7,
   });
 
   return token;
@@ -127,7 +124,7 @@ app.use("/api/users", userroutes);
 app.use("/api/jobs", jobRoutes);
 app.use("/api/analytics", analyticRoutes);
 app.use("/api/AccountSettings", accountSettingsRoutes);
-app.use("/api", employeeRoutes); // Use employee routes
+app.use("/api", employeeRoutes);
 
 app.get("/api/users/me", verifyToken, async (req, res) => {
   try {
@@ -138,14 +135,9 @@ app.get("/api/users/me", verifyToken, async (req, res) => {
   }
 });
 
-// Protecting routes
 app.use("/api/protected-route", verifyToken, (req, res) => {
   res.json({ message: "This is a protected route" });
 });
 
-
-export default (req, res) => {
-  res.status(200).json({ message: "Hello from Node.js on Vercel!" });
-};
-
-export { app, razorpay };
+// Export the express app for serverless deployment
+export default app;
