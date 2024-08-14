@@ -9,8 +9,9 @@ import { dirname } from "path";
 
 dotenv.config();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __filename = __filename || process.argv[1];
+const __dirname = path.dirname(__filename);
+
 const JWT_SECRET = process.env.JWT_SECRET;
 
 // Configure multer
