@@ -1,4 +1,4 @@
-import { checkAuth } from "../controller/usercontroller.js";
+import { checkAuth } from "./controller/usercontroller.js"; // Adjusted path
 
 export const handler = async (event) => {
   try {
