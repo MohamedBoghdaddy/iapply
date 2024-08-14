@@ -1,6 +1,6 @@
 // netlify/functions/authMiddleware.js
 import jwt from "jsonwebtoken";
-import User from "../models/UserModel.js";
+import User from "./models/UserModel.js";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
