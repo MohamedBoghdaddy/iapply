@@ -1,5 +1,5 @@
 // netlify/functions/getAllEmployees.js
-import { getAllEmployees } from "../controller/EmployeeController.js";
+import { getAllEmployees } from "./controller/EmployeeController.js";
 
 export const handler = async (event) => {
   try {

@@ -1,4 +1,4 @@
-import { logoutUser } from "../controller/usercontroller.js";
+import { logoutUser } from "./controller/usercontroller.js";
 
 export const handler = async (event) => {
   try {

@@ -1,6 +1,6 @@
 // netlify/functions/updateAccountSettings.js
 import mongoose from "mongoose";
-import AccountSettings from "../models/AccountSettingsModel.js";
+import AccountSettings from "./models/AccountSettingsModel.js";
 
 export const handler = async (event) => {
   try {

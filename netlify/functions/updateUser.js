@@ -1,4 +1,4 @@
-import { updateUser } from "../controller/usercontroller.js";
+import { updateUser } from "./controller/usercontroller.js";
 
 export const handler = async (event) => {
   const userId = event.queryStringParameters.userId;

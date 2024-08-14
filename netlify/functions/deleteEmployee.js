@@ -1,4 +1,4 @@
-import { deleteEmployee } from "../controller/EmployeeController.js";
+import { deleteEmployee } from "./controller/EmployeeController.js";
 
 export const handler = async (event) => {
   const employeeId = event.queryStringParameters.employeeId;

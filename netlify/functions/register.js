@@ -1,4 +1,4 @@
-import { register } from "../controller/usercontroller.js";
+import { register } from "./controller/usercontroller.js";
 
 export const handler = async (event) => {
   try {

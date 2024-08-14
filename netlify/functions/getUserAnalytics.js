@@ -1,4 +1,4 @@
-import { getUserAnalytics } from "../controller/analyticsController.js";
+import { getUserAnalytics } from "./controller/analyticsController.js";
 
 export const handler = async (event) => {
   const userId = event.queryStringParameters.userId;
