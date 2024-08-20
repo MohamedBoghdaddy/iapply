@@ -1,4 +1,4 @@
-import { createEmployee } from "./EmployeeController.js";
+import { createEmployee } from "../controller/EmployeeController.js";
 
 export const handler = async (event) => {
   const body = JSON.parse(event.body);

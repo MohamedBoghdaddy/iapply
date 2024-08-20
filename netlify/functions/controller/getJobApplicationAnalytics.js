@@ -1,5 +1,5 @@
 // netlify/functions/getJobApplicationAnalytics.js
-import { getJobApplicationAnalytics } from "./analyticsController.js";
+import { getJobApplicationAnalytics } from "../controller/analyticsController.js";
 
 export const handler = async (event) => {
   try {

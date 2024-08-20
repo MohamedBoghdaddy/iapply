@@ -1,4 +1,4 @@
-import { deleteUser } from "./usercontroller.js";
+import { deleteUser } from "../controller/usercontroller.js";
 
 export const handler = async (event) => {
   const userId = event.queryStringParameters.userId;

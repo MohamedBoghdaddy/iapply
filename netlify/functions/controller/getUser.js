@@ -10,7 +10,7 @@ exports.handler = async function (event, context) {
   try {
     const userId = event.queryStringParameters.id;
     await client.connect();
-    const database = client.db("your-database-name");
+    const database = client.db("Iapply");
     const users = database.collection("users");
     const user = await users.findOne({ _id: userId });
 

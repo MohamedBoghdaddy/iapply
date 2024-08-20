@@ -1,4 +1,4 @@
-import { login } from "./usercontroller.js";
+import { login } from "../controller/usercontroller.js";
 
 export const handler = async (event) => {
   try {
