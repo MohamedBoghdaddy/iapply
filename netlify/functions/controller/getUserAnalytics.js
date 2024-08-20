@@ -1,12 +1,13 @@
-// netlify/functions/getAllEmployees.js
-import { getAllEmployees } from "./controller/EmployeeController.js";
+import { getUserAnalytics } from "./analyticsController.js";
 
 export const handler = async (event) => {
+  const userId = event.queryStringParameters.userId;
+
   try {
-    const data = await getAllEmployees();
+    const analytics = await getUserAnalytics(userId);
     return {
       statusCode: 200,
-      body: JSON.stringify(data),
+      body: JSON.stringify(analytics),
     };
   } catch (error) {
     return {

@@ -22,7 +22,7 @@ const upload = multer({ dest: "uploads/" });
 const MongoDBStore = connectMongoDBSession(session);
 const JWT_SECRET = process.env.JWT_SECRET;
 const SESSION_SECRET = process.env.SESSION_SECRET;
-
+const router = express.Router();
 // Environment variables
 const PORT = process.env.PORT || 4000;
 const MONGO_URL = process.env.MONGO_URL;
@@ -138,6 +138,6 @@ app.get("/api/users/me", verifyToken, async (req, res) => {
 app.use("/api/protected-route", verifyToken, (req, res) => {
   res.json({ message: "This is a protected route" });
 });
-
+app.use("../netlify/functions/api.js", router);
 // Export the express app for serverless deployment
 export default app;

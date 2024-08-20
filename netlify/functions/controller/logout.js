@@ -1,12 +1,11 @@
-// netlify/functions/getJobApplicationAnalytics.js
-import { getJobApplicationAnalytics } from "./controller/analyticsController.js";
+import { logoutUser } from "./usercontroller.js";
 
 export const handler = async (event) => {
   try {
-    const data = await getJobApplicationAnalytics();
+    await logoutUser();
     return {
       statusCode: 200,
-      body: JSON.stringify(data),
+      body: JSON.stringify({ message: "Logged out successfully" }),
     };
   } catch (error) {
     return {

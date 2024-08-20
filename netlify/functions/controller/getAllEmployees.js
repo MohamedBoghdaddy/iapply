@@ -1,12 +1,12 @@
-import { login } from "./controller/usercontroller.js";
+// netlify/functions/getAllEmployees.js
+import { getAllEmployees } from "./EmployeeController.js";
 
 export const handler = async (event) => {
   try {
-    const body = JSON.parse(event.body);
-    const user = await login(body);
+    const data = await getAllEmployees();
     return {
       statusCode: 200,
-      body: JSON.stringify(user),
+      body: JSON.stringify(data),
     };
   } catch (error) {
     return {

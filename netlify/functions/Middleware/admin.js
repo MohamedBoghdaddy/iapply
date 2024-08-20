@@ -1,4 +1,4 @@
-import { authorizeRoles } from "./Middleware/authMiddleware"; // Adjusted path
+import { authorizeRoles } from "./authMiddleware"; // Adjusted path
 
 export const handler = async (event) => {
   try {

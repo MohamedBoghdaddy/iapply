@@ -1,4 +1,4 @@
-import { getSubscriptionAnalytics } from "./controller/analyticsController.js";
+import { getSubscriptionAnalytics } from "./analyticsController.js";
 
 export const handler = async () => {
   try {

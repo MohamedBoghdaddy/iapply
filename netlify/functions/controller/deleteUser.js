@@ -1,14 +1,13 @@
-import { updateUser } from "./controller/usercontroller.js";
+import { deleteUser } from "./usercontroller.js";
 
 export const handler = async (event) => {
   const userId = event.queryStringParameters.userId;
-  const body = JSON.parse(event.body);
 
   try {
-    const updatedUser = await updateUser(userId, body);
+    await deleteUser(userId);
     return {
       statusCode: 200,
-      body: JSON.stringify(updatedUser),
+      body: JSON.stringify({ message: "User deleted successfully" }),
     };
   } catch (error) {
     return {

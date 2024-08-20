@@ -1,13 +1,12 @@
-import { deleteUser } from "./controller/usercontroller.js";
+// netlify/functions/getJobApplicationAnalytics.js
+import { getJobApplicationAnalytics } from "./analyticsController.js";
 
 export const handler = async (event) => {
-  const userId = event.queryStringParameters.userId;
-
   try {
-    await deleteUser(userId);
+    const data = await getJobApplicationAnalytics();
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: "User deleted successfully" }),
+      body: JSON.stringify(data),
     };
   } catch (error) {
     return {

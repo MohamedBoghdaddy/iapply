@@ -1,11 +1,12 @@
-import { logoutUser } from "./controller/usercontroller.js";
+import { login } from "./usercontroller.js";
 
 export const handler = async (event) => {
   try {
-    await logoutUser();
+    const body = JSON.parse(event.body);
+    const user = await login(body);
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: "Logged out successfully" }),
+      body: JSON.stringify(user),
     };
   } catch (error) {
     return {
