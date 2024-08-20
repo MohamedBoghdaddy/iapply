@@ -1,0 +1,36 @@
+.map-container {
+  text-align: center;
+  margin: 20px auto;
+  background-color: #162447; /* Dark blue background similar to the one in the photo */
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  max-width: 1200px;
+}
+
+.map-header h1 {
+  color: #ffffff;
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.map-header p {
+  color: #ffffff;
+  font-size: 18px;
+  margin-bottom: 40px;
+}
+
+.country-info {
+  margin-top: 20px;
+  font-size: 18px;
+  color: #ffffff;
+}
+
+.highlight-text {
+  font-size: 24px;
+  font-weight: bold;
+  color: #ffffff; /* Text color */
+  background-color: #6c63ff; /* Background color */
+  padding: 10px;
+  margin-bottom: 20px;
+}

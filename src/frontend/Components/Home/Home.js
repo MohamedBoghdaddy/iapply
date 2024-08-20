@@ -9,6 +9,7 @@ import HowItWorks from "./HowItWorks";
 import Features from "./Features";
 import Pricing from "./Pricing";
 import Contact from "./contact";
+import GlobalMap from "./GlobalMap";
 const Home = () => {
   return (
     <div className="full-page">
@@ -28,14 +29,16 @@ const Home = () => {
       <section id="features">
         <Features />
       </section>
+      <section id="GlobalMap">
+        <GlobalMap />
+      </section>
       <section id="pricing">
         <Pricing />
       </section>
-       <section id="contact">
+      <section id="contact">
         <Contact />
       </section>
       <CallToActionSection />
-     
     </div>
   );
 };

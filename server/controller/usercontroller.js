@@ -13,7 +13,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const JWT_SECRET = process.env.JWT_SECRET;
 
-// Configure multer
+// Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, path.join(__dirname, "../uploads"));
@@ -21,11 +21,12 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => {
     cb(
       null,
-      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
+      `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
     );
   },
 });
-const upload = multer({ storage: storage }).single("resume");
+
+export const upload = multer({ storage: storage });
 
 // Function to create a JWT token
 const createToken = (user) =>
@@ -121,15 +122,28 @@ export const getUser = async (req, res) => {
   }
 };
 
-// Update user data
+// Update user data including CV and Photo
 export const updateUser = async (req, res) => {
   try {
     const { userId } = req.params;
-    const updatedUser = await User.findByIdAndUpdate(userId, req.body, {
+    const updates = { ...req.body };
+
+    if (req.files) {
+      if (req.files.cvFile) {
+        updates.cvFileName = req.files.cvFile[0].filename;
+      }
+      if (req.files.photoFile) {
+        updates.photoUrl = `/uploads/${req.files.photoFile[0].filename}`;
+      }
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(userId, updates, {
       new: true,
     }).select("-password");
-    if (!updatedUser)
+
+    if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });
+    }
 
     res
       .status(200)

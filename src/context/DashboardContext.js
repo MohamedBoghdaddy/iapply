@@ -9,7 +9,7 @@ const DashboardProvider = ({ children }) => {
   const { state } = useAuthContext();
   const { user, isAuthenticated } = state;
 
-  const [view, setView] = useState("list");
+  const [view, setView] = useState("profile");
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState({
@@ -30,8 +30,8 @@ const DashboardProvider = ({ children }) => {
             withCredentials: true,
           }
         );
-        console.log("Fetched User Data:", response.data);
         setUserData(response.data);
+        setFormData(response.data.userProfile || {});
       }
     } catch (error) {
       console.error("Error fetching user profile:", error);
@@ -46,26 +46,7 @@ const DashboardProvider = ({ children }) => {
     }
   }, [isAuthenticated, user, view, fetchUserData]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const profileData = userData.userProfile;
-        if (!profileData) {
-          await fetchUserData();
-          setFormData(userData.userProfile || {});
-        } else {
-          setFormData(profileData);
-        }
-        console.log("Form Data:", formData); // Debugging
-      } catch (error) {
-        console.error("Failed to fetch user profile:", error);
-      }
-    };
-
-    fetchData();
-  }, [fetchUserData, userData, formData]); // Add formData to the dependency array
-
-  const updateProfile = async (formData, cvFile) => {
+  const updateProfile = async (formData, cvFile, photoFile) => {
     if (editingId) {
       const formDataToSend = new FormData();
       Object.keys(formData).forEach((key) => {
@@ -76,9 +57,13 @@ const DashboardProvider = ({ children }) => {
         formDataToSend.append("cvFile", cvFile);
       }
 
+      if (photoFile) {
+        formDataToSend.append("photoFile", photoFile);
+      }
+
       try {
         const response = await axios.put(
-          `http://localhost:4000/api/update/${editingId}`,
+          `http://localhost:4000/api/users/update/${editingId}`,
           formDataToSend,
           {
             headers: {
@@ -87,10 +72,14 @@ const DashboardProvider = ({ children }) => {
           }
         );
         toast.success(response.data.msg, { position: "top-right" });
+        setUserData((prevData) => ({
+          ...prevData,
+          userProfile: response.data.user,
+        }));
         setView("profile");
       } catch (error) {
         if (error.response && error.response.data.error) {
-          alert(error.response.data.error);
+          toast.error(error.response.data.error, { position: "top-right" });
         } else {
           console.error("Error submitting form:", error);
         }

@@ -1,33 +1,28 @@
 import React, { useState, useEffect, useContext } from "react";
 import { DashboardContext } from "../../../context/DashboardContext";
 import "../styles/UserProfile.css";
-import { useAuthContext } from "../../../context/AuthContext"; // Adjust path if necessary
+import { useAuthContext } from "../../../context/AuthContext";
 
 const UserProfile = () => {
-  const { userProfile, fetchUserData, updateProfile } =
+  const { userData, fetchUserData, updateProfile } =
     useContext(DashboardContext);
   const { user } = useAuthContext();
 
   const [formData, setFormData] = useState({});
   const [cvFile, setCvFile] = useState(null);
+  const [photoFile, setPhotoFile] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        if (!userProfile) {
-          await fetchUserData();
-          setFormData(userProfile || {});
-        } else {
-          setFormData(userProfile);
-        }
-      } catch (error) {
-        console.error("Failed to fetch user profile:", error);
+      if (!userData.userProfile) {
+        await fetchUserData();
       }
+      setFormData(userData.userProfile || {});
     };
 
     fetchData();
-  }, [fetchUserData, userProfile]);
+  }, [fetchUserData, userData]);
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -37,16 +32,14 @@ const UserProfile = () => {
     setCvFile(e.target.files[0]);
   };
 
+  const handlePhotoUpload = (e) => {
+    setPhotoFile(e.target.files[0]);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await updateProfile(formData, cvFile);
-      alert("Profile updated successfully!");
-      setIsEditMode(false);
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      alert("Failed to update profile.");
-    }
+    await updateProfile(formData, cvFile, photoFile);
+    setIsEditMode(false);
   };
 
   return (
@@ -204,17 +197,29 @@ const UserProfile = () => {
           )}
         </div>
 
-        {/* CV Upload */}
-        <div className="cv-upload">
-          <h4>Upload CV</h4>
+        {/* CV and Photo Upload */}
+        <div className="upload-section">
+          <h4>Upload CV and Photo</h4>
           {isEditMode ? (
-            <input
-              type="file"
-              accept=".pdf, .doc, .docx"
-              onChange={handleCvUpload}
-            />
+            <>
+              <input
+                type="file"
+                accept=".pdf, .doc, .docx"
+                onChange={handleCvUpload}
+              />
+              <input
+                type="file"
+                accept=".jpg, .jpeg, .png"
+                onChange={handlePhotoUpload}
+              />
+            </>
           ) : (
-            <p>CV: {formData.cvFileName}</p>
+            <>
+              <p>CV: {formData.cvFileName}</p>
+              {formData.photoUrl && (
+                <img src={formData.photoUrl} alt="Profile" />
+              )}
+            </>
           )}
         </div>
 

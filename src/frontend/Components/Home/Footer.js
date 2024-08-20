@@ -5,7 +5,6 @@ import {
   faLinkedin,
   faInstagram,
 } from "@fortawesome/free-brands-svg-icons";
-
 import "../styles/footer.css";
 
 function Footer() {
@@ -17,18 +16,12 @@ function Footer() {
           <p>
             Welcome to HKI AI, where innovation meets excellence. We specialize
             in leveraging cutting-edge AI technology to streamline your job
-            application process and enhance your career opportunities. Our
-            platform is designed to simplify your job search, applying to
-            thousands of positions globally with just a few clicks. Stay ahead
-            in the competitive job market with our tailored AI-driven solutions.
-            Connect with us and discover how we can help you achieve your career
-            goals.
+            application process and enhance your career opportunities.
           </p>
-
           <div className="icons">
             <a href="https://www.facebook.com/hedj.eg">
               <FontAwesomeIcon icon={faFacebookF} />
-            </a>{" "}
+            </a>
             <a href="https://www.instagram.com/hedj.eg/">
               <FontAwesomeIcon icon={faInstagram} />
             </a>
@@ -37,13 +30,24 @@ function Footer() {
             </a>
           </div>
         </div>
-
         <div className="footer-col">
-          <h4>Subscribe to our Newsletter</h4>
-          <form className="newsletter-form">
-            <input type="email" placeholder="Enter your email" />
-            <button type="submit">Subscribe</button>
-          </form>
+          <h4>Important Links</h4>
+          <ul>
+            <li>Who We Are</li>
+            <li>Who We Serve</li>
+            <li>How It Works</li>
+            <li>Features</li>
+          </ul>
+        </div>
+        <div className="footer-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li>Affiliate Program</li>
+            <li>Pricing</li>
+            <li>Blog</li>
+            <li>FAQ</li>
+            <li>Contact Us</li>
+          </ul>
         </div>
       </div>
     </section>

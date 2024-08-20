@@ -1,111 +1,53 @@
 import express from "express";
-import AppliedJob from "../models/AppliedJobModel.js"; // Adjust based on your project structure
-import axios from "axios";
+import {
+  analyzeCv,
+  fetchJobs,
+  clusterJobs,
+  matchProfile,
+  applyJobs,
+  saveAppliedJob,
+  getUserAnalytics,
+  getJobApplicationAnalytics,
+  getSubscriptionAnalytics,
+  getCountries,
+  uploadCV,
+  downloadCV,
+  softDeleteCV,
+  searchJobs,
+} from "../controller/AppliedJobController.js"; // Adjust based on your project structure
+import { auth } from "../Middleware/authMiddleware.js"; // Assuming you have an auth middleware
 
 const router = express.Router();
 
-// Forward request to AI server to analyze CV
-router.post("/analyze-cv", async (req, res) => {
-  try {
-    const response = await axios.post(
-      "http://localhost:5000/api/analyze-cv",
-      req.body
-    );
-    res.json(response.data);
-  } catch (error) {
-    console.error("Error communicating with AI server:", error.message);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-});
+// Routes for AI server interactions
+router.post("/analyze-cv", analyzeCv);
+router.post("/fetch-jobs", fetchJobs);
+router.post("/cluster-jobs", clusterJobs);
+router.post("/match-profile", matchProfile);
+router.post("/apply-jobs", applyJobs);
 
-// Forward request to AI server to fetch jobs
-router.post("/fetch-jobs", async (req, res) => {
-  try {
-    const response = await axios.post(
-      "http://localhost:5000/api/fetch-jobs",
-      req.body
-    );
-    res.json(response.data);
-  } catch (error) {
-    console.error("Error communicating with AI server:", error.message);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-});
+// Route to save applied jobs
+router.post("/save-applied-jobs", saveAppliedJob);
 
-// Forward request to AI server to cluster jobs
-router.post("/cluster-jobs", async (req, res) => {
-  try {
-    const response = await axios.post(
-      "http://localhost:5000/api/cluster-jobs",
-      req.body
-    );
-    res.json(response.data);
-  } catch (error) {
-    console.error("Error communicating with AI server:", error.message);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-});
+// Analytics routes
+router.get("/user-analytics/:userId", getUserAnalytics);
+router.get("/job-application-analytics", getJobApplicationAnalytics);
+router.get("/subscription-analytics", getSubscriptionAnalytics);
 
-// Forward request to AI server to match profile to job
-router.post("/match-profile", async (req, res) => {
-  try {
-    const response = await axios.post(
-      "http://localhost:5000/api/match-profile",
-      req.body
-    );
-    res.json(response.data);
-  } catch (error) {
-    console.error("Error communicating with AI server:", error.message);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-});
+// Route to get available jobs by country
+router.get("/countries", getCountries);
 
-// Forward request to AI server to apply to jobs
-router.post("/apply-jobs", async (req, res) => {
-  try {
-    const response = await axios.post(
-      "http://localhost:5000/api/apply-jobs",
-      req.body
-    );
-    res.json(response.data);
-  } catch (error) {
-    console.error("Error communicating with AI server:", error.message);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-});
 
-// Endpoint to apply for jobs and save to database
-router.post("/save-applied-jobs", async (req, res) => {
-  const { userId, jobDetails } = req.body;
+// Route to upload CV
+router.post("/upload-cv", auth, uploadCV);
 
-  try {
-    const appliedJob = new AppliedJob({
-      userId,
-      companyName: jobDetails.companyName,
-      jobTitle: jobDetails.jobTitle,
-      location: jobDetails.location,
-      jobDescription: jobDetails.jobDescription,
-    });
+// Route to download CV by job ID
+router.get("/download-cv/:jobId", auth, downloadCV);
 
-    const savedJob = await appliedJob.save();
-    res
-      .status(200)
-      .json({ message: "Job application successful", appliedJob: savedJob });
-  } catch (error) {
-    console.error("Error applying to jobs:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
+// Route to soft delete a CV by job ID
+router.delete("/delete-cv/:jobId", auth, softDeleteCV);
 
-// Example route using AppliedJob
-router.get("/", async (req, res) => {
-  try {
-    const jobs = await AppliedJob.find(); // Example usage of AppliedJob model
-    res.json(jobs);
-  } catch (error) {
-    console.error("Failed to fetch jobs:", error);
-    res.status(500).json({ message: "Failed to fetch jobs", error });
-  }
-});
+// Route to search jobs
+router.get("/search", auth, searchJobs);
 
 export default router;

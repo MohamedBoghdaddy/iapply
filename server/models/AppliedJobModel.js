@@ -1,5 +1,3 @@
-// models/AppliedJobModel.js
-
 import mongoose from "mongoose";
 
 const appliedJobSchema = new mongoose.Schema({
@@ -12,6 +10,22 @@ const appliedJobSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  companyName: {
+    type: String,
+    required: true,
+  },
+  jobTitle: {
+    type: String,
+    required: true,
+  },
+  location: {
+    type: String,
+    required: true,
+  },
+  salary: {
+    type: Number,
+    required: true,
+  },
   appliedAt: {
     type: Date,
     default: Date.now,
@@ -20,6 +34,13 @@ const appliedJobSchema = new mongoose.Schema({
     type: String,
     enum: ["applied", "interview", "offer", "rejected"],
     default: "applied",
+  },
+  cv: {
+    type: String, // Path to the uploaded CV file
+  },
+  deleted: {
+    type: Boolean,
+    default: false,
   },
 });
 
