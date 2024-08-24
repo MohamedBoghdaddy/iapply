@@ -20,7 +20,7 @@ const router = express.Router();
 // Authentication routes
 router.post("/signup", register);
 router.post("/login", login);
-router.post("/logout", logoutUser);
+router.post("/logout", auth, logoutUser);
 
 // User routes with authentication
 router.get("/api/users/getone/:userId", auth, getUser);

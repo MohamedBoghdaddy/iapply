@@ -13,12 +13,18 @@ export const useLogout = () => {
         {},
         { withCredentials: true } // Ensure cookies are sent
       );
+
       dispatch({ type: "LOGOUT_SUCCESS" }); // Update the action type to match your reducer
 
       // Clear cookies
       deleteCookie("username");
       deleteCookie("email");
       deleteCookie("userId");
+
+      // Clear local storage
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      localStorage.removeItem("authToken");
     } catch (error) {
       console.error("Logout error:", error);
     }

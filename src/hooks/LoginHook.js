@@ -27,7 +27,6 @@ export const useLogin = (onLoginSuccess) => {
 
       const { token, user } = response.data;
 
-      // Store token and user data in localStorage
       localStorage.setItem("user", JSON.stringify({ token, user }));
 
     if (token && user) {

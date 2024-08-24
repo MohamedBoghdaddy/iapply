@@ -1,14 +1,7 @@
 import React, { useEffect, useState } from "react";
-import {
-  ComposableMap,
-  Geographies,
-  Geography,
-  ZoomableGroup,
-} from "react-simple-maps";
+import axios from "axios";
+import world from "../static/images/world.svg"; // Ensure the path is correct
 import "../styles/map.css"; // Ensure the path is correct
-
-const geoUrl =
-  "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json";
 
 const GlobalMap = () => {
   const [jobsByCountry, setJobsByCountry] = useState({
@@ -18,9 +11,30 @@ const GlobalMap = () => {
     Germany: 75, // Static data for demonstration
   });
   const [selectedCountry, setSelectedCountry] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleCountryClick = (country) => {
-    setSelectedCountry(country);
+  useEffect(() => {
+    const fetchJobData = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get("/api/jobs/countries");
+        setJobsByCountry((prevJobs) => ({
+          ...prevJobs,
+          ...response.data,
+        }));
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching jobs data:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchJobData();
+  }, []);
+
+  const handleCountryClick = (countryName) => {
+    setSelectedCountry(countryName);
+    // Here you can add more logic, like fetching detailed job data for the selected country
   };
 
   return (
@@ -29,51 +43,26 @@ const GlobalMap = () => {
         <h1>Where We Go For Jobs</h1>
         <p>These are Real-Time available Job Insights for the current week!</p>
       </div>
-      <ComposableMap
-        projectionConfig={{
-          rotate: [-10, 0, 0],
-          scale: 147,
-        }}
-        width={980}
-        height={551}
-        style={{
-          width: "100%",
-          height: "auto",
-        }}
-      >
-        <ZoomableGroup>
-          <Geographies geography={geoUrl}>
-            {({ geographies }) =>
-              geographies.map((geo) => {
-                const countryName = geo.properties.NAME;
-                const jobCount = jobsByCountry[countryName] || 0;
-
-                return (
-                  <Geography
-                    key={geo.rsmKey}
-                    geography={geo}
-                    onClick={() => handleCountryClick(countryName)}
-                    style={{
-                      default: {
-                        fill: "#B3D1FF", // Light blue fill color for all countries
-                        outline: "none",
-                      },
-                      hover: {
-                        fill: "#6495ED", // Darker blue on hover
-                        outline: "none",
-                      },
-                      pressed: {
-                        fill: "#6495ED", // Even darker blue when pressed
-                        outline: "none",
-                      },
-                    }}
-                  />
-                );
-              })
-            }
-          </Geographies>
-        </ZoomableGroup>
-      </ComposableMap>
+      {loading ? (
+        <div>Loading map...</div>
+      ) : (
+        <div className="svg-map">
+          <img src={world} alt="World Map" useMap="#world-map" />
+          <map name="world-map">
+            {Object.entries(jobsByCountry).map(([country, jobCount], index) => (
+              <area
+                key={index}
+                shape="poly" // Adjust shape if necessary, depending on the SVG
+                coords="..." // Add coordinates corresponding to the country's region in the SVG
+                alt={country}
+                title={`${country}: ${jobCount} jobs`}
+                onClick={() => handleCountryClick(country)}
+                href="#"
+              />
+            ))}
+          </map>
+        </div>
+      )}
       {selectedCountry && (
         <div className="country-info">
           <h2>{selectedCountry}</h2>

@@ -48,7 +48,7 @@ app.use(cookieParser(SESSION_SECRET));
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://iapplyhki.vercel.app"],
+     origin: ["http://localhost:3000",/* "https://iapplyhki.vercel.app"*/],
     credentials: true,
   })
 );
@@ -67,14 +67,9 @@ app.use(
     },
   })
 );
-
 // Connect to MongoDB
 mongoose
-  .connect(MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    serverSelectionTimeoutMS: 5000,
-  })
+  .connect(MONGO_URL)
   .then(() => {
     console.log("MongoDB connected successfully");
   })
